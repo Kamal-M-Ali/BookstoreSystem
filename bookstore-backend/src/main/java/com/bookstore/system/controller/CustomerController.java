@@ -1,10 +1,9 @@
 package com.bookstore.system.controller;
 
-import com.bookstore.system.model.Cart;
-import com.bookstore.system.model.Customer;
-import com.bookstore.system.model.Login;
-import com.bookstore.system.model.PaymentCard;
+import com.bookstore.system.model.*;
+import com.bookstore.system.repository.AddressRepository;
 import com.bookstore.system.repository.CustomerRepository;
+import com.bookstore.system.repository.PaymentCardRepository;
 import com.bookstore.system.service.EmailService;
 import com.bookstore.system.service.JwtService;
 import jakarta.validation.Valid;
@@ -16,6 +15,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Set;
 import java.util.UUID;
 import java.util.regex.Pattern;
 
@@ -26,6 +26,9 @@ public class CustomerController {
     private CustomerRepository customerRepository;
 
     @Autowired
+    private PaymentCardRepository paymentCardRepository;
+
+    @Autowired
     private EmailService emailService;
 
     @Autowired
@@ -33,6 +36,14 @@ public class CustomerController {
 
     @Autowired
     private AuthenticationManager authenticationManager;
+
+    private void sendEmail(String to, String subject, String text) {
+        SimpleMailMessage mailMessage = new SimpleMailMessage();
+        mailMessage.setTo(to);
+        mailMessage.setSubject(subject);
+        mailMessage.setText(text);
+        emailService.sendEmail(mailMessage);
+    }
 
     @PostMapping("/api/signup")
     ResponseEntity<String> newCustomer(@Valid @RequestBody Customer newCustomer) {
@@ -76,12 +87,10 @@ public class CustomerController {
         newCustomer.setConfirmationToken(UUID.randomUUID().toString());
 
         // send verification email
-        SimpleMailMessage mailMessage = new SimpleMailMessage();
-        mailMessage.setTo(newCustomer.getEmail());
-        mailMessage.setSubject("Complete Registration!");
-        mailMessage.setText("To confirm your account, please click here : "
-                +"http://localhost:8080/verify-account?token="+newCustomer.getVerificationToken());
-        emailService.sendEmail(mailMessage);
+        sendEmail(newCustomer.getEmail(),
+                "Complete Registration!",
+                "To confirm your account, please click here : "
+                        +"http://localhost:8080/verify-account?token="+newCustomer.getVerificationToken());
 
         // save customer in database
         customerRepository.save(newCustomer);
@@ -138,12 +147,10 @@ public class CustomerController {
             customer.setConfirmationToken(UUID.randomUUID().toString());
             customerRepository.save(customer);
 
-            SimpleMailMessage mailMessage = new SimpleMailMessage();
-            mailMessage.setTo(customer.getEmail());
-            mailMessage.setSubject("Reset your password");
-            mailMessage.setText("To reset your password, please click here : "
-                    +"http://localhost:3000/ResetPassword/"+customer.getVerificationToken());
-            emailService.sendEmail(mailMessage);
+            sendEmail(customer.getEmail(),
+                    "Reset your password",
+                    "To reset your password, please click here : "
+                            +"http://localhost:3000/ResetPassword/"+customer.getVerificationToken());
             return ResponseEntity.ok().body("Request Received");
         }
         return ResponseEntity.badRequest().body("Account not found");
@@ -186,7 +193,7 @@ public class CustomerController {
             if(customer.getCustomerState() == Customer.CUSTOMER_STATE.ACTIVE)
                 return ResponseEntity.ok().body(jwtService.generateToken(customer));
             if(customer.getCustomerState() == Customer.CUSTOMER_STATE.INACTIVE)
-                return ResponseEntity.status(403).body("Account not activated");
+                return ResponseEntity.status(401).body("Account not activated");
         }
         return ResponseEntity.badRequest().body("Invalid Credentials");
     }
@@ -198,5 +205,96 @@ public class CustomerController {
         if (customer != null)
             return ResponseEntity.ok().body(customer);
         return ResponseEntity.badRequest().body("Invalid Credentials");
+    }
+
+    @PostMapping("/api/personal-info/:{email}")
+    public ResponseEntity<String> changePersonalInfo(@PathVariable String email, @RequestParam String name, @RequestParam Integer phoneNumber) {
+        Customer customer = customerRepository.findByEmail(email);
+
+        if (customer != null) {
+            customer.setName(name);
+            customer.setPhoneNumber(phoneNumber);
+            customerRepository.save(customer);
+
+            sendEmail(customer.getEmail(),
+                    "[Bookstore System] Changes to your profile",
+                    "This is an email to inform you that your password has been changed.");
+
+            return ResponseEntity.ok().body("Updated password");
+        }
+        return ResponseEntity.badRequest().body("Could not find account.");
+    }
+
+    @PostMapping("/api/address/:{email}")
+    public ResponseEntity<String> changeAddress(@PathVariable String email, @Valid @RequestBody Address address) {
+        Customer customer = customerRepository.findByEmail(email);
+
+        if (customer != null) {
+            customer.setAddress(address);
+            customerRepository.save(customer);
+
+            sendEmail(customer.getEmail(),
+                    "[Bookstore System] Changes to your profile",
+                    "This is an email to inform you that your profile's address has been updated.");
+
+            return ResponseEntity.ok().body("Updated address");
+        }
+        return ResponseEntity.badRequest().body("Could not find account.");
+    }
+
+    @PostMapping("/api/password/:{email}")
+    public ResponseEntity<String> changePassword(@PathVariable String email, @RequestParam String password) {
+        if (password.length() < 6)
+            return ResponseEntity.badRequest().body("Password too short.");
+
+        Customer customer = customerRepository.findByEmail(email);
+
+        if (customer != null) {
+            BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+            customer.setPassword(passwordEncoder.encode(password));
+            customerRepository.save(customer);
+
+            sendEmail(customer.getEmail(),
+                    "[Bookstore System] Changes to your profile",
+                    "This is an email to inform you that your password has been changed.");
+
+            return ResponseEntity.ok().body("Updated password");
+        }
+        return ResponseEntity.badRequest().body("Could not find account.");
+    }
+
+    @PutMapping("/api/payment/:{email}")
+    public ResponseEntity<String> setPayment(@PathVariable String email, @Valid @RequestBody PaymentCard paymentCard) {
+        Customer customer = customerRepository.findByEmail(email);
+
+        if (customer != null) {
+            Set<PaymentCard> paymentCards = customer.getPaymentCards();
+
+            // customer can only have 3 cards
+            if (paymentCards.size() == 3)
+                return ResponseEntity.badRequest().body("Max payment cards attached to account.");
+
+            // check card number string is only digits
+            if (!paymentCard.getCardNumber().matches("\\d+"))
+                return ResponseEntity.badRequest().body("Card number invalid");
+
+            // update last four and encrypt their card number
+            paymentCard.setLastFour(
+                    paymentCard.getCardNumber().substring(paymentCard.getCardNumber().length() - 4)
+            );
+            BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+            paymentCard.setCardNumber(passwordEncoder.encode(paymentCard.getCardNumber()));
+
+            // add and save the payment card
+            paymentCard.setCustomer(customer);
+            paymentCardRepository.save(paymentCard);
+
+            sendEmail(customer.getEmail(),
+                    "[Bookstore System] Changes to your profile",
+                    "This is an email to inform you that your profile's payment information has been updated.");
+
+            return ResponseEntity.ok().body("Updated payment card");
+        }
+        return ResponseEntity.badRequest().body("Could not find account.");
     }
 }

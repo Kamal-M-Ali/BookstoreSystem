@@ -13,7 +13,7 @@
     flex-direction: column;
     gap: 12px;
     padding: 12px;
-    background-color: rgb(236, 236, 236);
+    background-color: #BDBDBD;
     
 }
 .admin-util h1 {
@@ -23,8 +23,8 @@
 .admin-btn {
     cursor: pointer;
     padding: 2rem 4rem;
-    border: 1px solid black;
-    background-color: gray;
+    border: 1px solid #263238;
+    background-color: #455A64;
     color: #e6e6e6;
     border-radius: 8px;
     text-decoration: none;
@@ -33,6 +33,16 @@
 } 
 .admin-btn:hover,
 .admin-btn :active {
-    background-color: darkgray
+    background-color: #37474F;
 }
- 
+
+.admin-banner {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    text-align: center;
+    background-color: rgb(15, 15, 15);
+    color: white;
+    font-size: 1.2em;
+    text-shadow: none;
+}

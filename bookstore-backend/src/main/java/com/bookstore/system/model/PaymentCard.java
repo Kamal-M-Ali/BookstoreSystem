@@ -1,5 +1,6 @@
 package com.bookstore.system.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jdk.jfr.Name;
@@ -16,7 +17,8 @@ public class PaymentCard {
     private String cardOwner;
     @NotBlank(message = "Expiration date cannot be blank")
     private String expDate;
-    @ManyToOne
+    @JsonBackReference
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "customer_id")
     private Customer customer;
     public int getId() {

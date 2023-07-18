@@ -139,7 +139,7 @@ export default function Checkout() {
                             </form>
                         }
                         <hr className/>
-                        <button className='confirm-checkout-btn next-step' onClick={() => setStep(1)}>Next Step</button>
+                        <button className='confirm-checkout-btn' onClick={() => setStep(1)}>Next Step</button>
                     </Card>
                 </div>)
 
@@ -177,7 +177,7 @@ export default function Checkout() {
                             <p className='checkout-book-title'>{book.title}</p>
                         )}
                         <h2 className='confirm-cart-h2'><b>Total:</b> ${countTotalPrice()}</h2>
-                        <button className='confirm-checkout-btn next-step' onClick={() => setStep(2)}>Place Order</button>
+                        <button className='confirm-checkout-btn' onClick={() => setStep(2)}>Place Order</button>
                     </Card>
                 </div>)
 

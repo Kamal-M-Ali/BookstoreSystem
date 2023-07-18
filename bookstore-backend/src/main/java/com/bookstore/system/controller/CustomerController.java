@@ -207,7 +207,7 @@ public class CustomerController {
         return ResponseEntity.badRequest().body("Invalid Credentials");
     }
 
-    @PostMapping("/api/personal-info/:{email}")
+    @PostMapping("/api/change-personal-info/:{email}")
     public ResponseEntity<String> changePersonalInfo(@PathVariable String email, @RequestParam String name, @RequestParam Integer phoneNumber) {
         Customer customer = customerRepository.findByEmail(email);
 
@@ -225,7 +225,7 @@ public class CustomerController {
         return ResponseEntity.badRequest().body("Could not find account.");
     }
 
-    @PostMapping("/api/address/:{email}")
+    @PostMapping("/api/change-address/:{email}")
     public ResponseEntity<String> changeAddress(@PathVariable String email, @Valid @RequestBody Address address) {
         Customer customer = customerRepository.findByEmail(email);
 
@@ -242,7 +242,7 @@ public class CustomerController {
         return ResponseEntity.badRequest().body("Could not find account.");
     }
 
-    @PostMapping("/api/password/:{email}")
+    @PostMapping("/api/change-password/:{email}")
     public ResponseEntity<String> changePassword(@PathVariable String email, @RequestParam String password) {
         if (password.length() < 6)
             return ResponseEntity.badRequest().body("Password too short.");

@@ -34,7 +34,7 @@ export default function ResetPassword()
             }
         }).then((res) => {
             if(res.status === 200) {
-                setMessage("Password changed");
+                setMessage("Your password has been reset.");
             } else {
                 alert("This shouldn't happen");
             }

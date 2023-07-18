@@ -11,7 +11,7 @@ export default function AccountPage() {
     const navigate = useNavigate();
     const [ accountDetails, setAccountDetails ] = useState(null);
 
-    useEffect(() => {
+    function fetchData() {
         const email = localStorage.getItem('email') || sessionStorage.getItem('email');
         
         if (email) {
@@ -28,12 +28,76 @@ export default function AccountPage() {
         } else {
             setAccountDetails(null);
         }
-    }, [navigate])
+    }
+    useEffect(fetchData, [navigate])
 
     const [editInfo, setEditInfo] = useState(false);
     const [editPaym, setEditPaym] = useState(false);
     const [editAddr, setEditAddr] = useState(false);
     const [editPswd, setEditPswd] = useState(false);
+
+    function changeInfo(e) {
+        e.preventDefault();
+        const email = localStorage.getItem('email') || sessionStorage.getItem('email');
+
+        if (e.target.fullName.value === '' && e.target.phoneNumber.value === '') {
+            setEditInfo(false);
+            return;
+        }
+        
+        if (email) {
+            axios.post("http://localhost:8080/api/change-personal-info/:" + email, null, { params: {
+                name: (e.target.fullName.value !== '' ? e.target.fullname.value : accountDetails.name),
+                phoneNumber: (e.target.phoneNumber.value !== '' ? e.target.phoneNumber.value : accountDetails.phoneNumber)
+            }}).then((res)=>{
+                if (res.status === 200) {
+                    alert("Personal info changed");
+                    fetchData();
+                    setEditInfo(false);
+                }
+            }).catch((err)=>{
+                console.log(err.response);
+                alert(typeof err.response.data === 'string' ? err.response.data : "[Error]: Couldn't change info")
+                setEditInfo(false);
+            })
+        }
+    }
+
+    function changeAddress(e) {
+        e.preventDefault();
+        const email = localStorage.getItem('email') || sessionStorage.getItem('email');
+
+        if (e.target.street.value === '' && e.target.city.value === ''
+        && e.target.state.value === '' && e.target.zipcode.value === '') {
+            setEditAddr(false);
+            return;
+        }
+
+        if (e.target.street.value === '' || e.target.city.value === ''
+        || e.target.state.value === '' || e.target.zipcode.value === '') {
+            alert('Please fill out all fields');
+            return;
+        }
+        
+        if (email) {
+            axios.post("http://localhost:8080/api/change-address/:" + email, {
+                street: e.target.street.value,
+                city: e.target.city.value,
+                state: e.target.state.value,
+                zipcode: e.target.zipcode.value 
+            }).then((res)=>{
+                if (res.status === 200) {
+                    alert("Address updated");
+                    fetchData();
+                    setEditAddr(false);
+                }
+            }).catch((err)=>{
+                console.log(err.response);
+                alert(typeof err.response.data === 'string' ? err.response.data : "[Error]: Couldn't change address")
+                setEditAddr(false);
+            })
+        }
+    }
 
     function changePassword(e) {
         e.preventDefault();
@@ -55,6 +119,7 @@ export default function AccountPage() {
             }).catch((err)=>{
                 console.log(err.response);
                 alert(typeof err.response.data === 'string' ? err.response.data : "[Error]: Couldn't change password")
+                setEditPswd(false);
             })
         }
     }
@@ -71,11 +136,11 @@ export default function AccountPage() {
                         <button className='account-edit-btn' onClick={() => setEditInfo(true)}>Edit personal info</button>
                     </div>
                     :
-                    <form onSubmit={() => setEditInfo(false)}>
-                        <input type='text' placeholder='Full Name' />
-                        <input type='text' placeholder='Phone Number' />
+                    <form onSubmit={changeInfo}>
+                        <input type='text' name='fullName' placeholder='Full Name' />
+                        <input type='text' name='phoneNumber' placeholder='Phone Number' />
 
-                        <button className='account-edit-btn' type='submit'>Save</button>
+                        <button className='account-edit-btn' type='submit'>Finish</button>
                     </form>
                 }
                 <hr />
@@ -89,18 +154,16 @@ export default function AccountPage() {
                         <button className='account-edit-btn' onClick={() => setEditAddr(true)}>Edit address</button>
                     </div>
                     :
-                    <form onSubmit={() => setEditAddr(false)}>
-                        <input type='text' placeholder='Street' />
-                        <input type='text' placeholder='City' />
-                        <input className='state' type='text' placeholder='State' />
-                        <input className='zip' type='text' placeholder='Zip code' />
+                    <form onSubmit={changeAddress}>
+                        <input type='text' name='street' placeholder='Street' />
+                        <input type='text' name='city' placeholder='City' />
+                        <input className='state' name='state' type='text' placeholder='State' />
+                        <input className='zip' name='zipcode' type='text' placeholder='Zip code' />
 
-                        <button className='account-edit-btn' type='submit'>Save</button>
+                        <button className='account-edit-btn' type='submit'>Finish</button>
                     </form>
                 }
                 <hr />
-
-                
 
                 <h1>Password</h1>
                 {(!editPswd) ?
@@ -109,9 +172,9 @@ export default function AccountPage() {
                     </div>
                     :
                     <form onSubmit={changePassword}>
-                        <input type='password' name='password1' placeholder='New Password (6+ characters)' />
-                        <input type='password' name='password2' placeholder='Confirm Password' />
-                        <button className='account-edit-btn' type='submit'>Save</button>
+                        <input type='password' name='password1' placeholder='New Password (6+ characters)' required />
+                        <input type='password' name='password2' placeholder='Confirm Password' required />
+                        <button className='account-edit-btn' type='submit'>Change</button>
                     </form>
                 }
                 <hr />

@@ -6,7 +6,7 @@
     text-align: center;
     margin: auto;
     padding: 4px 20px;
-    background-color: black;
+    background-color:black;
 }
 
 .nav-bar ul {
@@ -48,13 +48,3 @@
     right: -14px;
 }
 
-.banner {
-    display: flex;
-    justify-content: center;
-    flex-direction: column;
-    text-align: center;
-    background-color: rgb(85, 41, 41);
-    color: #e2dfdf;
-    text-shadow: 3px 3px 2px #474747;
-    font-size: 2em;
-}

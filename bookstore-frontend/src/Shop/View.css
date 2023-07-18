@@ -7,28 +7,28 @@
 .view-details {
     text-align: center;
     padding: 16px;
-    background-color: rgb(245, 245, 245);
+    background-color: #FAFAFA;
     width: 60%;
 }
 .view-details h1  {
-    font-size: 6em;
+    font-size: 3em;
     padding: 0;
     margin: 0;
 }
 .view-details h2 {
-    font-size: 2em;
+    font-size: 1.5em;
     padding: 0;
     margin: 0;
 }
 .top-hr {
-    margin-top: 16px;
-    margin-bottom: 8em;
+    margin-top: 8px;
+    margin-bottom: 4em;
     display: block;             
     background-color:black;
     height: 4px;
 }
 .bottom-hr {
-    margin-top: 8em;
+    margin-top: 4em;
 }
 
 .view-details p {
@@ -37,17 +37,17 @@
 }
 .view-details h3 {
     font-weight: bold;
-    font-size: 4em;
+    font-size: 2.5em;
     margin: 0;
     padding: 0;
 }
 .view-details button {
     cursor: pointer;
     margin-top: 1em;
-    width: 80%;
-    padding: 2.6rem 2rem;
-    border: 1px solid #0b2712;
-    background-color: #33af52;
+    width: 40%;
+    padding: 1.8rem;
+    background-color: #0097A7;
+    border: 1px solid #00838F;
     color: #e6e6e6;
     border-radius: 4px;
     font-weight: normal;
@@ -55,7 +55,7 @@
 } 
 .view-details button:hover,
 .view-details button:active {
-    background-color: #298f43;
+    background-color: #00838F;
 }
 
 .view-main {

@@ -11,7 +11,7 @@ export default function Book(props)
             <h2 className='book-price'>${props.price}</h2>
 
             <Link to={`/View/${props.isbn}`} state={{book: props}}>
-                <button className='view-details-btn user'>View Details</button>
+                <button className='view-details-btn'>View Details</button>
             </Link>
         </Card>
     );

@@ -5,7 +5,11 @@ import Featured from './Featured';
 export default function Home()
 {
     return (<>
-        <Navigation/>
+        <Navigation />
+        <div className='banner'>
+            <h1>Bookstore</h1>
+        </div>
+        <hr className='banner-underline'/>
         <div className='user-home'>    
             <div className='featured-section'>
                 <h1>Featured</h1>

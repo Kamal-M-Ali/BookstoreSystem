@@ -4,8 +4,8 @@
     justify-content: space-between;
     align-items: center;
     text-align: center;
-    padding: 16px;
-    background-color: #f5f1f1;
+    padding: 20px;
+    background-color: #ECEFF1;
 }
 
 .order-book-listing {
@@ -42,7 +42,6 @@
 .cart-btn {
     cursor: pointer;
     padding: 1rem 2rem;
-    border: 1px solid #222121;
     color: #e6e6e6;
     border-radius: 4px;
     font-weight: bold;
@@ -52,17 +51,19 @@
 }
 
 .add {
-    background-color: #239b41;
+    background-color: #0097A7;
+    border: 1px solid #00838F;
 }
 .add:hover,
 .add:active {
-    background-color: #1b7a33;
+    background-color: #00838F;
 }
 
 .rm {
-    background-color: #963030;
+    background-color: #C62828;
+    border: 1px solid #a01919;
 }
 .rm:hover,
 .rm:active {
-    background-color: #702323;
+    background-color: #B71C1C;
 }

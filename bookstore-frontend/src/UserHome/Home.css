@@ -10,6 +10,25 @@
 }
 
 .featured-section hr {
-    border: 10px dotted black;
-    border-style: none none dotted;
+    border: 8px black;
+    border-style: none none double;
+}
+
+.banner {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    background-image:url("https://www.thehowe.org/wp-content/uploads/2023/02/Book-Banner.jpg");
+    background-size: cover;
+    padding: 10% 0;
+    text-align: center;
+    background-color: #2d3436;
+    color: #e2dfdf;
+    text-shadow: 3px 3px 2px #474747;
+    font-size: 2em;
+}
+.banner-underline {
+    padding: 0;
+    margin: 0;
+    border-color: black;
 }

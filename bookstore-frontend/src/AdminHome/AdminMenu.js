@@ -1,4 +1,3 @@
-import './AdminMenu.css';
 import { Link, useNavigate } from 'react-router-dom';
 
 export default function AdminMenu()
@@ -6,7 +5,7 @@ export default function AdminMenu()
     const key = 'jwtToken';
     const navigate = useNavigate();
 
-    return (<>
+    return (
     <div className='nav-bar'>
         <p className='home-button'>
             <Link className='nav-link' to='/Admin'>Home</Link>
@@ -14,9 +13,5 @@ export default function AdminMenu()
         <p>
             <button className='nav-button' onClick={() => {sessionStorage.removeItem(key); localStorage.removeItem(key); navigate('/')}}>Logout</button>
         </p>
-    </div>
-    <div className='admin-banner'>
-        <h1>Admin Menu</h1>
-    </div>
-    </>);
+    </div>);
 }

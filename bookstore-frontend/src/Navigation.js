@@ -7,7 +7,7 @@ export default function Nagivation(props)
     let loggedIn = sessionStorage.getItem(key) || localStorage.getItem(key) || false;
     const navigate = useNavigate();
 
-    return (<>
+    return (
     <div className='nav-bar'>
         <p className='home-button'>
             <Link className='nav-link' to='/'>Home</Link>
@@ -41,9 +41,5 @@ export default function Nagivation(props)
                 </>
             }
         </ul>
-    </div>
-    <div className='banner'>
-        <h1>Bookstore</h1>
-    </div>
-    </>);
+    </div>);
 }

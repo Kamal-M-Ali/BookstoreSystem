@@ -17,7 +17,7 @@ export default function ForgotPassword() {
             params: { email: email }
         }).then((res) => {
             if (res.status === 200) {
-                setMessage("Reset email sent if account exists");
+                setMessage("Reset email sent if account exists.");
             } else {
                 alert("This shouldn't happen");
             }

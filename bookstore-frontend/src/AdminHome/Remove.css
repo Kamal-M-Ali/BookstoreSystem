@@ -6,7 +6,7 @@
     text-align: center;
     margin: 2em auto;
     padding: 1.5rem;
-    background-color: #f0e9e9;
+    background-color: #90A4AE;
 }
 
 .dual-btn-confirm {
@@ -19,26 +19,26 @@
     margin-top: 2rem;
     width: 49%;
     padding: 1rem 2rem;
-    border-color: rgb(109, 109, 109);
     color: #e6e6e6;
     border-radius: 4px;
- 
     font-weight: bold;
     font-size: 1.2em;
 } 
 
 .yes {
-    background-color: rgb(54, 168, 98);
+    background-color: #0097A7;
+    border: 1px solid #00838F;
 }
 .yes:hover,
 .yes:active {
-    background-color: rgb(37, 136, 75);
+    background-color: #00838F;
 }
 
 .no {
-    background-color: rgb(153, 51, 51);
+    background-color: #C62828;
+    border: 1px solid #a01919;
 }
 .no:hover,
 .no:active {
-    background-color: rgb(129, 39, 39);
+    background-color: #B71C1C;
 }

@@ -1,36 +1,11 @@
 import './Admin.css';
 import { Link } from 'react-router-dom';
-import { useEffect, useState } from 'react';
-import axios from 'axios';
 import AdminMenu from './AdminMenu';
 import Card from '../Card';
 
 export default function Admin() {
-    const [admin, setAdminStatus] = useState(false);
 
-    const API = 'http://localhost:8080/exists/admin/:';
-
-    function checkAdminStatus() {
-        const email = localStorage.getItem('email') || sessionStorage.getItem('email');
-        
-        if (email) {
-            axios.get(API + email)
-            .then((res) => {
-                setAdminStatus(true);
-            })
-            .catch((err) => {
-                console.log(err.response);
-                setAdminStatus(false);
-            })
-        } else {
-            setAdminStatus(false);
-        }
-    }
-
-    // eslint-disable-next-line
-    useEffect(checkAdminStatus, []);
-
-    return (admin ? (<>
+    return (<>
         <AdminMenu />
         <div className='admin-btns'>
             <Card className='admin-util'>
@@ -51,12 +26,6 @@ export default function Admin() {
             </Card>
         </div>
     </>)
-        :
-        (<div className='unauthorized'>
-            <h1>UNAUTHORIZED ACCESS:</h1>
-            <Link to='/'>Go back to home page</Link>
-        </div>)
-    )
 }
 
 

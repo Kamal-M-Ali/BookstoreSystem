@@ -1,17 +1,15 @@
 import './AccountPage.css';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import Navigation from '../Navigation';
 import Card from '../Card'
-import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 export default function AccountPage() {
-    const [isAllowed, setIsAllowed] = useState(false);
-
     // fetch user profile
     const API = 'http://localhost:8080/api/profile/:';
     const navigate = useNavigate();
+    const [ accountDetails, setAccountDetails ] = useState(null);
 
     useEffect(() => {
         const email = localStorage.getItem('email') || sessionStorage.getItem('email');
@@ -21,14 +19,14 @@ export default function AccountPage() {
             .then((res) => {
                 // res.data=customer json data
                 console.log(res.data);
-                setIsAllowed(true);
+                setAccountDetails(res.data);
             })
             .catch((err) => {
                 console.log(err.response);
-                setIsAllowed(false);
+                setAccountDetails(null);
             })
         } else {
-            setIsAllowed(false);
+            setAccountDetails(null);
         }
     }, [navigate])
 
@@ -37,35 +35,39 @@ export default function AccountPage() {
     const [editAddr, setEditAddr] = useState(false);
     const [editPswd, setEditPswd] = useState(false);
 
-    const dummy_data = {
-        personal: {
-            name: "First Last",
-            number: "000-000-0000"
-        },
+    function changePassword(e) {
+        e.preventDefault();
+        if (e.target.password1.value !== e.target.password2.value) {
+            alert('Passwords must match')
+            return;
+        }
 
-        payment: {
-            name: "First Last",
-            card: "0000 0000 0000 0000",
-            exp: "00/00",
-        },
-
-        address: {
-            street1: "Street 1",
-            street2: "Street 2",
-            state: "State",
-            zip: "Zip code"
-        },
+        const email = localStorage.getItem('email') || sessionStorage.getItem('email');
+        
+        if (email) {
+            axios.post("http://localhost:8080/api/change-password/:" + email, null, { params : {
+                password: e.target.password1.value
+            }}).then((res)=>{
+                if (res.status === 200) {
+                    alert("Password changed");
+                    setEditPswd(false);
+                }
+            }).catch((err)=>{
+                console.log(err.response);
+                alert(typeof err.response.data === 'string' ? err.response.data : "[Error]: Couldn't change password")
+            })
+        }
     }
 
     return (<>
         <Navigation />
-        {isAllowed ?
+        {(accountDetails !== null) ?
             (<Card className='account-form'>
                 <h1>Personal Info</h1>
                 {(!editInfo) ?
                     <div>
-                        <p>Name: {dummy_data.personal.name}</p>
-                        <p>Phone Number: {dummy_data.personal.number}</p>
+                        <p>Name: {accountDetails.name}</p>
+                        <p>Phone Number: {accountDetails.phoneNumber}</p>
                         <button className='account-edit-btn' onClick={() => setEditInfo(true)}>Edit personal info</button>
                     </div>
                     :
@@ -81,15 +83,15 @@ export default function AccountPage() {
                 <h1>Address</h1>
                 {(!editAddr) ?
                     <div>
-                        <p>{dummy_data.address.street1}</p>
-                        <p>{dummy_data.address.street2}</p>
-                        <p>{dummy_data.address.state}, {dummy_data.address.zip}</p>
+                        <p>{accountDetails.address.street}</p>
+                        <p>{accountDetails.address.city}</p>
+                        <p>{accountDetails.address.state}, {accountDetails.address.zipcode}</p>
                         <button className='account-edit-btn' onClick={() => setEditAddr(true)}>Edit address</button>
                     </div>
                     :
                     <form onSubmit={() => setEditAddr(false)}>
-                        <input type='text' placeholder='Street Line 1' />
-                        <input type='text' placeholder='Street Line 2' />
+                        <input type='text' placeholder='Street' />
+                        <input type='text' placeholder='City' />
                         <input className='state' type='text' placeholder='State' />
                         <input className='zip' type='text' placeholder='Zip code' />
 
@@ -98,28 +100,7 @@ export default function AccountPage() {
                 }
                 <hr />
 
-                <h1>Payment</h1>
-                {(!editPaym) ?
-                    <div>
-                        <p>{dummy_data.payment.name}</p>
-                        <p>{dummy_data.payment.card}</p>
-                        <p>Exp: {dummy_data.payment.exp}</p>
-                        <div className='payment-opts'>
-                            <button className='account-edit-btn add-pay' onClick={() => setEditPaym(true)}>Edit payment method</button>
-                            <button className='account-edit-btn add-pay' onClick={() => setEditPaym(true)}>Add payment method</button>
-                        </div>
-                    </div>
-                    :
-                    <form onSubmit={() => setEditPaym(false)}>
-                        <input type='text' placeholder='Name on Card' />
-                        <input type='text' placeholder='Card number' />
-                        <input className='card-date' type='text' placeholder='Expiration date' />
-                        <input className='card-cvv' type='text' placeholder='CVV' />
-
-                        <button className='account-edit-btn' type='submit'>Save</button>
-                    </form>
-                }
-                <hr />
+                
 
                 <h1>Password</h1>
                 {(!editPswd) ?
@@ -127,9 +108,9 @@ export default function AccountPage() {
                         <button className='account-edit-btn' onClick={() => setEditPswd(true)}>Change Password</button>
                     </div>
                     :
-                    <form onSubmit={() => setEditPswd(false)}>
-                        <input type='text' placeholder='New Password (6+ characters)' />
-                        <input type='text' placeholder='Confirm Password' />
+                    <form onSubmit={changePassword}>
+                        <input type='password' name='password1' placeholder='New Password (6+ characters)' />
+                        <input type='password' name='password2' placeholder='Confirm Password' />
                         <button className='account-edit-btn' type='submit'>Save</button>
                     </form>
                 }

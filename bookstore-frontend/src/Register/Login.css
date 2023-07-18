@@ -6,7 +6,7 @@
     text-align: center;
     margin: 2em auto;
     padding: 1.5rem;
-    background-color: #f0e9e9;
+    background-color: #CFD8DC;
 }
  
 .login-error {
@@ -24,7 +24,8 @@
     font: inherit;
     padding: 1rem;
     border-radius: 6px;
-    border: 1px solid #ccc;
+    border: 1px solid #B0BEC5;
+    background-color: #ECEFF1;
     width: 90%;
 }
 
@@ -57,8 +58,8 @@
     margin-top: 2rem;
     width: 60%;
     padding: 1rem 2rem;
-    border: 1px solid #222121;
-    background-color: #a39b9b;
+    border: 1px solid #263238;
+    background-color: #455A64;
     color: #e6e6e6;
     border-radius: 4px;
  
@@ -67,7 +68,7 @@
 } 
 .login-btn button:hover,
 .login-btn button:active {
-    background-color: #7c7575;
+    background-color: #37474F;
 }
  
 .login-leave {
@@ -76,7 +77,7 @@
     color: black;
 }
 .login-leave:hover {
-    color: blue;
+    color: #0277BD;
 }
 
 .logout {

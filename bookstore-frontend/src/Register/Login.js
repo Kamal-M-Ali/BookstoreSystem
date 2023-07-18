@@ -38,23 +38,22 @@ export default function Login() {
                 alert("This shouldn't happen");
             }
         }).catch((err) => {
-            console.log(err.response.data);
-
-            if (err.response.status === 403) {
+            if (err.response.status === 401) {
                 alert("Activate your account.");
+            } else {
+                axios.post(API + "/admin", { // If customer didn't exist, check for admin
+                    email: email,
+                    password: password
+                }).then((res) => {
+                    if (res.status === 200) {
+                        login(res.data, '/Admin');
+                    } else {
+                        alert("This shouldn't happen");
+                    }
+                }).catch((err) => { // If neither exists
+                    alert("Invalid credentials");
+                })
             }
-            axios.get(API + "admin", { // If customer didn't exist, check for admin
-                email: email,
-                password: password
-            }).then((res) => {
-                if (res.status === 200) {
-                    login(res.data, '/Admin');
-                } else {
-                    alert("This shouldn't happen");
-                }
-            }).catch((err) => { // If neither exists
-                alert("Invalid credentials");
-            })
         })
     }
 

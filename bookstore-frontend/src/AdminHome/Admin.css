@@ -19,9 +19,6 @@
 .admin-util h1 {
     font-size: 2em;
 }
-.unauthorized {
-    text-align: center;
-}
 
 .admin-btn {
     cursor: pointer;

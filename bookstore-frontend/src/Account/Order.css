@@ -1,9 +1,13 @@
+.order {
+    background-color: #F5F5F5;
+}
+
 .order-details {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     padding: 12px;
-    background-color: gray;
+    background-color: #78909C;
     color: white;
 }
 
@@ -18,18 +22,16 @@
 .order-btn {
     cursor: pointer;
     padding: 0rem 4rem;
-    border: 1px solid #222121;
+    border: 1px solid #263238;
+    background-color: #455A64;
     color: #e6e6e6;
     border-radius: 4px;
     font-size: 1.6em;
 }
 
-.user {
-    background-color: #424242;
-}
-.user:hover,
-.user:active {
-    background-color: #424242;
+.order-btn:hover,
+.order-btn:active {
+    background-color: #37474F;
 }
 
 .order-books {

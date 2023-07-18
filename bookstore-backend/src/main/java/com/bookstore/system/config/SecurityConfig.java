@@ -49,6 +49,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests()
                 .requestMatchers(
                         "/api/login",
+                        "/api/signup/admin",
                         "/api/signup",
                         "/api/login/admin",
                         "/verify-reset**",

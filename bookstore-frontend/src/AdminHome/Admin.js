@@ -7,6 +7,9 @@ export default function Admin() {
 
     return (<>
         <AdminMenu />
+        <div className='admin-banner'>
+            <h1>Admin Menu</h1>
+        </div>
         <div className='admin-btns'>
             <Card className='admin-util'>
                 <h1>Manage Books</h1>

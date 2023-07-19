@@ -13,7 +13,7 @@ export default function Login() {
     const API = 'http://localhost:8080/api/login';
     const key = 'jwtToken';
 
-    function login(jwtToken, to) {
+    function login(jwtToken) {
         if (rememberUser) {
             localStorage.setItem(key, jwtToken);
             localStorage.setItem("email", email)
@@ -22,7 +22,6 @@ export default function Login() {
             sessionStorage.setItem("email", email)
         }
         axios.defaults.headers.common = {'Authorization': `Bearer ${jwtToken}`}
-        navigate(to);
     }
 
     function handleSubmit(e) {
@@ -33,7 +32,8 @@ export default function Login() {
             password: password
         }).then((res) => {
             if (res.status === 200) {
-                login(res.data, '/');
+                login(res.data);
+                navigate('/')
             } else {
                 alert("This shouldn't happen");
             }
@@ -46,7 +46,8 @@ export default function Login() {
                     password: password
                 }).then((res) => {
                     if (res.status === 200) {
-                        login(res.data, '/Admin');
+                        login(res.data, '');
+                        window.location.href = 'http://localhost:3000/Admin'; // need app.js to reload the admin status
                     } else {
                         alert("This shouldn't happen");
                     }

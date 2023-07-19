@@ -18,7 +18,7 @@ public class PaymentCard {
     @NotBlank(message = "Expiration date cannot be blank")
     private String expDate;
     @JsonBackReference
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "customer_id")
     private Customer customer;
     public int getId() {

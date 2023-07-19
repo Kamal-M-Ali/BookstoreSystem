@@ -9,22 +9,22 @@ export default function AccountPage() {
     // fetch user profile
     const API = 'http://localhost:8080/api/profile/:';
     const navigate = useNavigate();
-    const [ accountDetails, setAccountDetails ] = useState(null);
+    const [accountDetails, setAccountDetails] = useState(null);
 
     function fetchData() {
         const email = localStorage.getItem('email') || sessionStorage.getItem('email');
-        
+
         if (email) {
             axios.get(API + email)
-            .then((res) => {
-                // res.data=customer json data
-                console.log(res.data);
-                setAccountDetails(res.data);
-            })
-            .catch((err) => {
-                console.log(err.response);
-                setAccountDetails(null);
-            })
+                .then((res) => {
+                    // res.data=customer json data
+                    console.log(res.data);
+                    setAccountDetails(res.data);
+                })
+                .catch((err) => {
+                    console.log(err.response);
+                    setAccountDetails(null);
+                })
         } else {
             setAccountDetails(null);
         }
@@ -44,18 +44,20 @@ export default function AccountPage() {
             setEditInfo(false);
             return;
         }
-        
+
         if (email) {
-            axios.post("http://localhost:8080/api/change-personal-info/:" + email, null, { params: {
-                name: (e.target.fullName.value !== '' ? e.target.fullname.value : accountDetails.name),
-                phoneNumber: (e.target.phoneNumber.value !== '' ? e.target.phoneNumber.value : accountDetails.phoneNumber)
-            }}).then((res)=>{
+            axios.post("http://localhost:8080/api/change-personal-info/:" + email, null, {
+                params: {
+                    name: (e.target.fullName.value !== '' ? e.target.fullname.value : accountDetails.name),
+                    phoneNumber: (e.target.phoneNumber.value !== '' ? e.target.phoneNumber.value : accountDetails.phoneNumber)
+                }
+            }).then((res) => {
                 if (res.status === 200) {
                     alert("Personal info changed");
                     fetchData();
                     setEditInfo(false);
                 }
-            }).catch((err)=>{
+            }).catch((err) => {
                 console.log(err.response);
                 alert(typeof err.response.data === 'string' ? err.response.data : "[Error]: Couldn't change info")
                 setEditInfo(false);
@@ -68,33 +70,87 @@ export default function AccountPage() {
         const email = localStorage.getItem('email') || sessionStorage.getItem('email');
 
         if (e.target.street.value === '' && e.target.city.value === ''
-        && e.target.state.value === '' && e.target.zipcode.value === '') {
+            && e.target.state.value === '' && e.target.zipcode.value === '') {
             setEditAddr(false);
             return;
         }
 
         if (e.target.street.value === '' || e.target.city.value === ''
-        || e.target.state.value === '' || e.target.zipcode.value === '') {
+            || e.target.state.value === '' || e.target.zipcode.value === '') {
             alert('Please fill out all fields');
             return;
         }
-        
+
         if (email) {
             axios.post("http://localhost:8080/api/change-address/:" + email, {
                 street: e.target.street.value,
                 city: e.target.city.value,
                 state: e.target.state.value,
-                zipcode: e.target.zipcode.value 
-            }).then((res)=>{
+                zipcode: e.target.zipcode.value
+            }).then((res) => {
                 if (res.status === 200) {
                     alert("Address updated");
                     fetchData();
                     setEditAddr(false);
                 }
-            }).catch((err)=>{
+            }).catch((err) => {
                 console.log(err.response);
                 alert(typeof err.response.data === 'string' ? err.response.data : "[Error]: Couldn't change address")
                 setEditAddr(false);
+            })
+        }
+    }
+
+    function deletePaymentCard(paymentCard) {
+        const email = localStorage.getItem('email') || sessionStorage.getItem('email');
+
+        if (email) {
+            axios.post("http://localhost:8080/api/del-payment/:" + email, paymentCard)
+            .then((res) => {
+                if (res.status === 200) {
+                    alert("Payment card deleted");
+                    fetchData();
+                    setEditInfo(false);
+                }
+            }).catch((err) => {
+                console.log(err.response);
+                alert(typeof err.response.data === 'string' ? err.response.data : "[Error]: Couldn't delete card")
+                setEditInfo(false);
+            })
+        }
+    }
+
+    function addPaymentCard(e) {
+        e.preventDefault();
+        const email = localStorage.getItem('email') || sessionStorage.getItem('email');
+
+        if (e.target.cardOwner.value === '' && e.target.cardNumber.value === '' 
+        && e.target.expDate.value === '' && e.target.cvv === '') {
+            setEditAddr(false);
+            return;
+        }
+
+        if (e.target.cardOwner.value === '' && e.target.cardNumber.value === '' 
+        && e.target.expDate.value === '' && e.target.cvv === '') {
+            alert('Please fill out all fields');
+            return;
+        }
+
+        if (email) {
+            axios.put("http://localhost:8080/api/add-payment/:" + email, {
+                cardOwner: e.target.cardOwner.value,
+                cardNumber: e.target.cardNumber.value,
+                expDate: e.target.expDate.value
+            }).then((res) => {
+                if (res.status === 200) {
+                    alert("Payment card added");
+                    fetchData();
+                    setEditPaym(false);
+                }
+            }).catch((err) => {
+                console.log(err.response);
+                alert(typeof err.response.data === 'string' ? err.response.data : "[Error]: Couldn't add payment card")
+                setEditPaym(false);
             })
         }
     }
@@ -107,16 +163,18 @@ export default function AccountPage() {
         }
 
         const email = localStorage.getItem('email') || sessionStorage.getItem('email');
-        
+
         if (email) {
-            axios.post("http://localhost:8080/api/change-password/:" + email, null, { params : {
-                password: e.target.password1.value
-            }}).then((res)=>{
+            axios.post("http://localhost:8080/api/change-password/:" + email, null, {
+                params: {
+                    password: e.target.password1.value
+                }
+            }).then((res) => {
                 if (res.status === 200) {
                     alert("Password changed");
                     setEditPswd(false);
                 }
-            }).catch((err)=>{
+            }).catch((err) => {
                 console.log(err.response);
                 alert(typeof err.response.data === 'string' ? err.response.data : "[Error]: Couldn't change password")
                 setEditPswd(false);
@@ -143,7 +201,7 @@ export default function AccountPage() {
                         <button className='account-edit-btn' type='submit'>Finish</button>
                     </form>
                 }
-                <hr />
+                <hr className='account-form-hr' />
 
                 <h1>Address</h1>
                 {(!editAddr) ?
@@ -163,7 +221,37 @@ export default function AccountPage() {
                         <button className='account-edit-btn' type='submit'>Finish</button>
                     </form>
                 }
-                <hr />
+                <hr className='account-form-hr' />
+
+                <h1>Payment Cards</h1>
+                {(!editPaym) ?
+                    (<>
+                        {accountDetails.paymentCards.map((paymentCard, k) =>
+                            <div key={k}>
+                                <h2>Card {k+1}</h2>
+                                <p>{paymentCard.cardOwner}</p>
+                                <p>**** **** **** {paymentCard.lastFour}</p>
+                                <p>Exp: {paymentCard.expDate}</p>
+                                <div className='payment-opts'>
+                                    <button className='account-edit-btn add-payment' onClick={()=>deletePaymentCard(paymentCard)}>Delete Card</button>
+                                </div>
+                                {k !== accountDetails.paymentCards.length-1 && <hr className='small-hr'/>}
+                            </div>
+                        )}
+                        {accountDetails.paymentCards.length < 3 && 
+                        <button className='account-edit-btn add-payment' onClick={() => setEditPaym(true)}>Add payment card</button>}
+                    </>)
+                    :
+                    <form onSubmit={addPaymentCard}>
+                        <input type='text' name='cardOwner' placeholder='Name on Card' />
+                        <input type='text' name='cardNumber' placeholder='Card number' />
+                        <input className='card-date' name='expDate' type='text' placeholder='Expiration date' />
+                        <input className='card-cvv' name='cvv' type='text' placeholder='CVV' />
+
+                        <button className='account-edit-btn' type='submit'>Finish</button>
+                    </form>
+                }
+                <hr className='account-form-hr' />
 
                 <h1>Password</h1>
                 {(!editPswd) ?
@@ -177,7 +265,7 @@ export default function AccountPage() {
                         <button className='account-edit-btn' type='submit'>Change</button>
                     </form>
                 }
-                <hr />
+                <hr className='account-form-hr' />
 
                 <h1>Order History</h1>
                 <Link to='/Account/OrderHistory' className='account-edit-btn account-link'>View</Link>

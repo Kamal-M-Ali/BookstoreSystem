@@ -12,10 +12,10 @@
     text-align: center;
 }
 
-.account-form hr {
+.account-form-hr {
     margin-top: 16px;
-    display: block;
-    width: 96%;               
+    width: 96%;
+    display: block;             
     background-color:black;
     height: 4px;
 }
@@ -62,4 +62,17 @@
 .account-link {
     margin: auto;
     text-decoration: none;
+}
+
+.add-payment {
+    width: 80%;
+    margin: 2em auto 0
+}
+
+.small-hr {
+    margin-top: 16px;
+    display: block;
+    width: 90%;               
+    background-color:black;
+    height: 1px;
 }

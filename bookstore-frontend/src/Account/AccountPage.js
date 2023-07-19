@@ -48,7 +48,7 @@ export default function AccountPage() {
         if (email) {
             axios.post("http://localhost:8080/api/change-personal-info/:" + email, null, {
                 params: {
-                    name: (e.target.fullName.value !== '' ? e.target.fullname.value : accountDetails.name),
+                    name: (e.target.fullName.value !== '' ? e.target.fullName.value : accountDetails.name),
                     phoneNumber: (e.target.phoneNumber.value !== '' ? e.target.phoneNumber.value : accountDetails.phoneNumber)
                 }
             }).then((res) => {

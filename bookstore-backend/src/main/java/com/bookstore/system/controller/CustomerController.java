@@ -217,7 +217,7 @@ public class CustomerController {
 
             sendEmail(customer.getEmail(),
                     "[Bookstore System] Changes to your profile",
-                    "This is an email to inform you that your password has been changed.");
+                    "This is an email to inform you that your personal info has been changed.");
 
             return ResponseEntity.ok().body("Updated password");
         }

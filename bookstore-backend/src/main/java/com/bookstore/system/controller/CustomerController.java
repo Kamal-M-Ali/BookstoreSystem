@@ -1,7 +1,6 @@
 package com.bookstore.system.controller;
 
 import com.bookstore.system.model.*;
-import com.bookstore.system.repository.AddressRepository;
 import com.bookstore.system.repository.CustomerRepository;
 import com.bookstore.system.repository.PaymentCardRepository;
 import com.bookstore.system.service.EmailService;
@@ -263,7 +262,7 @@ public class CustomerController {
         return ResponseEntity.badRequest().body("Could not find account.");
     }
 
-    @PutMapping("/api/payment/:{email}")
+    @PutMapping("/api/add-payment/:{email}")
     public ResponseEntity<String> setPayment(@PathVariable String email, @Valid @RequestBody PaymentCard paymentCard) {
         Customer customer = customerRepository.findByEmail(email);
 
@@ -293,7 +292,31 @@ public class CustomerController {
                     "[Bookstore System] Changes to your profile",
                     "This is an email to inform you that your profile's payment information has been updated.");
 
-            return ResponseEntity.ok().body("Updated payment card");
+            return ResponseEntity.ok().body("Added payment card");
+        }
+        return ResponseEntity.badRequest().body("Could not find account.");
+    }
+
+    @PostMapping("/api/del-payment/:{email}")
+    public ResponseEntity<String> delPayment(@PathVariable String email, @Valid @RequestBody PaymentCard paymentCard) {
+        Customer customer = customerRepository.findByEmail(email);
+
+        if (customer != null) {
+            Set<PaymentCard> paymentCards = customer.getPaymentCards();
+            PaymentCard card = paymentCardRepository.findById(paymentCard.getId())
+                    .orElseThrow();
+
+            if (!card.getCustomer().equals(customer))
+                return ResponseEntity.status(403).body("Cannot update another account.");
+
+            paymentCards.remove(card);
+            customerRepository.save(customer);
+
+            sendEmail(customer.getEmail(),
+                    "[Bookstore System] Changes to your profile",
+                    "This is an email to inform you that your profile's payment information has been updated.");
+
+            return ResponseEntity.ok().body("Deleted payment card");
         }
         return ResponseEntity.badRequest().body("Could not find account.");
     }

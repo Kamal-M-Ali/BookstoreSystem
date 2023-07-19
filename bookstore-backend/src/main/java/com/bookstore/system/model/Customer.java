@@ -27,7 +27,7 @@ public class Customer extends User {
     private Address address;
 
     @JsonManagedReference
-    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     @NotNull(message = "Must add a payment card")
     @Valid
     private Set<PaymentCard> paymentCards;

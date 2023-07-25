@@ -41,3 +41,23 @@
     background-color: #37474F;
 }
 
+.addToCart button {
+    cursor: pointer;
+    padding: 1rem 2rem;
+    background-color: #0097A7;
+    border: 1px solid #00838F;
+    color: #e6e6e6;
+    border-radius: 4px;
+    font-weight: bold;
+    font-size: 1.2em;
+}
+
+.buttonSpan {
+    display: flex;
+    flex-direction: row;
+}
+
+.buttonSpan button {
+    margin-left: 0.5em;
+    margin-right: 0.5em;
+}

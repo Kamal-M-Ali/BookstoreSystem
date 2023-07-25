@@ -10,9 +10,15 @@ export default function Book(props)
             <h2 className='book-listing'>{props.title} by: {props.author} [{props.rating} / 5⭐]</h2>
             <h2 className='book-price'>${props.price}</h2>
 
-            <Link to={`/View/${props.isbn}`} state={{book: props}}>
-                <button className='view-details-btn'>View Details</button>
-            </Link>
+            <span className='buttonSpan'>
+                <Link to={`/View/${props.isbn}`} state={{book: props}}>
+                    <button className='view-details-btn'>View Details</button>
+                </Link>
+                <div className='addToCart'>
+                    <button onClick={{}}>Add to Cart</button>
+                </div>
+            </span>
+
         </Card>
     );
 }

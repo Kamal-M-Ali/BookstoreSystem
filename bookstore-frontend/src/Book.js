@@ -7,7 +7,7 @@ export default function Book(props)
     return (
         <Card className='book'>
             <img src={props.cover} alt={props.description} className='cover-img'/>
-            <h2 className='book-listing'>{props.title} by: {props.author} [{props.rating} / 5⭐]</h2>
+            <h2 className='book-listing'>{props.title}<br />by: {props.author}<br />[{props.rating} / 5⭐]</h2>
             <h2 className='book-price'>${props.price}</h2>
 
             <span className='buttonSpan'>

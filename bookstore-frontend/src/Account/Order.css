@@ -4,34 +4,27 @@
 
 .order-details {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     justify-content: space-between;
     padding: 12px;
     background-color: #78909C;
     color: white;
 }
 
-.order-text {
+.order-header {
     display: flex;
     flex-direction: row;
-    justify-content: space-evenly;
     gap: 12px;
     color: black;
 }
 
-.order-btn {
-    cursor: pointer;
-    padding: 0rem 4rem;
-    border: 1px solid #263238;
-    background-color: #455A64;
-    color: #e6e6e6;
-    border-radius: 4px;
-    font-size: 1.6em;
-}
-
-.order-btn:hover,
-.order-btn:active {
-    background-color: #37474F;
+.order-info {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    background-color: #CFD8DC;
+    text-align: center;
+    color: black;
 }
 
 .order-books {

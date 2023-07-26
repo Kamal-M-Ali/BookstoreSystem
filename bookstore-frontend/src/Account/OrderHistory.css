@@ -4,3 +4,7 @@
     flex-direction: column;
     gap: 1.5rem;
 }
+
+.order-empty {
+    text-align: center;
+}

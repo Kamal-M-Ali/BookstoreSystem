@@ -1,16 +1,11 @@
 package com.bookstore.system.controller;
 
+import com.bookstore.system.model.Book;
+import com.bookstore.system.model.Promotion;
 import com.bookstore.system.service.AdminService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.bookstore.system.model.Admin;
 import com.bookstore.system.model.Login;
@@ -36,5 +31,15 @@ public class AdminController {
     @PostMapping("/api/signup/admin")
     ResponseEntity<String> newAdmin(@Valid @RequestBody Admin newAdmin) {
         return adminService.newAdmin(newAdmin);
+    }
+
+    @PutMapping("/api/admin/add-book/:{email}")
+    public ResponseEntity<String> addBook(@PathVariable String email, @Valid @RequestBody Book newBook) {
+        return adminService.addBook(email, newBook);
+    }
+
+    @PutMapping("/api/admin/add-promotion/:{email}")
+    public ResponseEntity<String> addPromotion(@PathVariable String email, @Valid @RequestBody Promotion newPromotion) {
+        return adminService.addPromotion(email, newPromotion);
     }
 }

@@ -15,12 +15,10 @@ public class BookService {
     @Autowired
     private BookRepository bookRepository;
 
-    @Bean
     public Book getBook(Integer id) {
         return bookRepository.findById(id).orElseThrow(() -> new BookNotFoundException(id));
     }
 
-    @Bean
     public List<Book> getAllBooks() {
         return bookRepository.findAll();
     }

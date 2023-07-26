@@ -1,5 +1,7 @@
 package com.bookstore.system.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.util.Date;
@@ -20,10 +22,12 @@ public class CompletedOrder {
     private Date orderedDate;
     private ORDER_STATUS orderStatus;
     private int totalPrice;
+    @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "customer_id")
     private Customer customer;
-    @OneToMany(mappedBy = "completedOrder")
+    @JsonManagedReference
+    @OneToMany(mappedBy = "completedOrder", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     private Set<CartBook> orderedBooks;
     @OneToOne(cascade = CascadeType.ALL)
     private PaymentCard paymentCard;
@@ -31,7 +35,6 @@ public class CompletedOrder {
     private Address address;
     @OneToOne(cascade = CascadeType.ALL)
     private Promotion promotion = null;
-
 
     public int getOrderId() {
         return orderId;

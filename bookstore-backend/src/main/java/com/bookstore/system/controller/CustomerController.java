@@ -67,4 +67,9 @@ public class CustomerController {
     public ResponseEntity<String> delPayment(@PathVariable String email, @Valid @RequestBody PaymentCard paymentCard) {
         return customerService.delPayment(email, paymentCard);
     }
+
+    @GetMapping("/api/orders/:{email}")
+    public ResponseEntity<?> getAllOrders(@PathVariable String email) {
+        return customerService.getAllOrders(email);
+    }
 }

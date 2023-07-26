@@ -3,12 +3,8 @@ package com.bookstore.system.model;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
-import org.springframework.security.core.GrantedAuthority;
 
-import java.util.Collection;
 import java.util.Set;
 
 @Entity
@@ -35,7 +31,8 @@ public class Customer extends User {
     @OneToOne(cascade = CascadeType.ALL)
     private Cart cart;
 
-    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     private Set<CompletedOrder> completedOrders;
 
     public CUSTOMER_STATE getCustomerState() {

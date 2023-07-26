@@ -233,4 +233,13 @@ public class CustomerService {
         }
         return ResponseEntity.badRequest().body("Could not find account.");
     }
+
+    public ResponseEntity<?> getAllOrders(String email) {
+        Customer customer = customerRepository.findByEmail(email);
+
+        if (customer != null) {
+            return ResponseEntity.ok().body(customer.getCompletedOrders());
+        }
+        return ResponseEntity.badRequest().body("Could not find account.");
+    }
 }

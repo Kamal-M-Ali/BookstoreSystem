@@ -1,5 +1,6 @@
 package com.bookstore.system.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 
 @Entity
@@ -7,12 +8,14 @@ public class CartBook {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    @ManyToOne
+    @OneToOne
     private Book book;
     private int quantity;
+    @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "completedOrder_id")
     private CompletedOrder completedOrder;
+    @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "cart_id")
     private Cart cart;

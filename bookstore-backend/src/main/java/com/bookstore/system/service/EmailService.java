@@ -7,7 +7,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
-@Service("emailService")
+@Service
 public class EmailService {
 
     private JavaMailSender javaMailSender;
@@ -21,8 +21,7 @@ public class EmailService {
     private void sendEmail(SimpleMailMessage email) {
         javaMailSender.send(email);
     }
-
-    @Bean
+    
     public void sendEmail(String to, String subject, String text) {
         SimpleMailMessage mailMessage = new SimpleMailMessage();
         mailMessage.setTo(to);

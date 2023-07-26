@@ -1,69 +1,47 @@
 import './OrderHistory.css';
+import { useState, useEffect } from 'react';
 import Order from './Order';
+import axios from 'axios';
 import Navigation from '../Navigation';
 
-export default function OrderHistory() 
-{
-    const dummy_data = [
-        {
-            orderid : 1,
-            date : "0/0/0000",
-            total : 50,
-            books : [
-                {
-                    title : "BookA",
-                    author : "John Doe",
-                    cover : "https://s26162.pcdn.co/wp-content/uploads/2018/02/gatsby-original2.jpg",
-                    rating : 5,
-                    price : 12.99,
-                    isbn: "000-000"
-                },
-                {
-                    title : "BookA",
-                    author : "John Doe",
-                    cover : "https://s26162.pcdn.co/wp-content/uploads/2018/02/gatsby-original2.jpg",
-                    rating : 5,
-                    price : 12.99,
-                    isbn: "000-000"
-                },
-                {
-                    title : "BookA",
-                    author : "John Doe",
-                    cover : "https://s26162.pcdn.co/wp-content/uploads/2018/02/gatsby-original2.jpg",
-                    rating : 5,
-                    price : 12.99,
-                    isbn: "000-000"
-                }
-            ]
-        },
-        {
-            orderid : 2,
-            date : "0/0/0000",
-            total : 60,
-            books : [
-                {
-                    title : "BookB",
-                    author : "John Doe",
-                    cover : "https://s26162.pcdn.co/wp-content/uploads/2018/02/gatsby-original2.jpg",
-                    rating : 5,
-                    price : 17.99,
-                    isbn: "000-000"
-                }
-            ]
+export default function OrderHistory() {
+    const [orders, setOrders] = useState([]);
+
+    function fetch() {
+        const email = localStorage.getItem('email') || sessionStorage.getItem('email');
+
+        if (email) {
+            axios
+                .get('http://localhost:8080/api/orders/:' + email)
+                .then((res) => {
+                    setOrders(res.data);
+                })
+                .catch((err) => {
+                    console.log('Error getting orders');
+                });
         }
-    ]
+    }
+    useEffect(fetch, []);
 
     return (<>
-    <Navigation />
-    <div className='order-hist-display'>
-        {dummy_data.map((order, k)=>
-        <Order key={k}
-            id={order.orderid}
-            total={order.total}
-            date={order.date}
-            books={order.books}
-        />
-        )}
-    </div> 
-    </>);   
+        <Navigation />
+        <div className='order-hist-display'>
+            {orders.length === 0 ?
+                <h2 className='order-empty'>No orders to display.</h2>
+                :
+                orders.map((order, k) =>
+                    <Order key={k}
+                        id={order.orderId}
+                        date={order.orderedDate}
+                        status={order.orderStatus}
+                        total={order.totalPrice}
+                        books={order.orderedBooks}
+                        paymentCard={order.paymentCard}
+                        address={order.address}
+                    />
+                )
+            }
+
+        </div>
+    </>);
 }

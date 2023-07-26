@@ -23,7 +23,6 @@ public class AdminService {
     @Autowired
     private JwtService jwtService;
 
-    @Bean
     public ResponseEntity<String> doesAdminExist(String email) {
         Admin admin = adminRepository.findByEmail(email);
 
@@ -32,7 +31,6 @@ public class AdminService {
         return ResponseEntity.badRequest().body("Invalid Credentials");
     }
 
-    @Bean
     public ResponseEntity<String> newAdmin(Admin newAdmin) {
         if (adminRepository.findByEmail(newAdmin.getEmail()) != null)
             return ResponseEntity.badRequest().body("Account already exists");
@@ -52,7 +50,6 @@ public class AdminService {
         return ResponseEntity.ok().body("Account creation success");
     }
 
-    @Bean
     public ResponseEntity<String> adminLogin(Login login) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(

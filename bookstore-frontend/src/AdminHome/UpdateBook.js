@@ -29,12 +29,7 @@ export default function Update()
         {books.map((book, k)=>
         <BookEdit key={k}
             todo='Update'
-            title={book.title}
-            author={book.author}
-            cover={book.coverURL}
-            rating={book.rating}
-            price={book.price}
-            isbn={book.isbn}
+            details={book}
         />
     )}</div>
     </>);

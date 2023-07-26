@@ -1,8 +1,8 @@
 package com.bookstore.system.model;
 
 import jakarta.persistence.*;
-
-import java.util.Set;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 @Entity
 public class Book {
@@ -14,19 +14,30 @@ public class Book {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+    @NotBlank(message = "ISBN cannot be blank")
     private String isbn;
+    @NotBlank(message = "Category cannot be blank")
     private String category;
+    @NotBlank(message = "Title cannot be blank")
     private String title;
+    @NotBlank(message = "Author cannot be blank")
     private String author;
+    @NotBlank(message = "Description cannot be blank")
     @Column(length = 1600)
     private String description;
+    @NotBlank(message = "Cover URL cannot be blank")
     private String coverURL;
+    @NotBlank(message = "Publisher cannot be blank")
     private String publisher;
-    private String publicationYear;
-    private int inStock;
-    private double price;
-    private double rating;
-    private BOOK_TYPE bookType;
+    @NotNull(message = "Publication year cannot be null")
+    private Integer publicationYear;
+    @NotNull(message = "Quantity cannot be null")
+    private Integer inStock;
+    @NotNull(message = "Price cannot be blank")
+    private Double price;
+    @NotNull(message = "Rating cannot be blank")
+    private Double rating;
+    private BOOK_TYPE bookType = BOOK_TYPE.DEFAULT;
 
     public int getId() {
         return id;
@@ -76,11 +87,11 @@ public class Book {
         this.publisher = publisher;
     }
 
-    public String getPublicationYear() {
+    public Integer getPublicationYear() {
         return publicationYear;
     }
 
-    public void setPublicationYear(String publicationYear) {
+    public void setPublicationYear(Integer publicationYear) {
         this.publicationYear = publicationYear;
     }
 
@@ -91,7 +102,7 @@ public class Book {
     public void setInStock(int inStock) {
         this.inStock = inStock;
     }
-    
+
 
     public BOOK_TYPE getBookType() {
         return bookType;
@@ -109,11 +120,11 @@ public class Book {
         this.description = description;
     }
 
-    public double getRating() {
+    public Double getRating() {
         return rating;
     }
 
-    public void setRating(double rating) {
+    public void setRating(Double rating) {
         this.rating = rating;
     }
 
@@ -125,10 +136,10 @@ public class Book {
         this.author = author;
     }
 
-    public void setPrice(double price) {
+    public void setPrice(Double price) {
         this.price = price;
     }
-    public double getPrice() {
+    public Double getPrice() {
         return price;
     }
 }

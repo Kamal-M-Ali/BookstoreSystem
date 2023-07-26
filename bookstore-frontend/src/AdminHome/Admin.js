@@ -25,7 +25,7 @@ export default function Admin() {
 
             <Card className='admin-util'>
                 <h1>Manage Promotions</h1>
-                <p>Not yet implemented.</p>
+                <Link to='/Admin/ManagePromotions/Add' className='admin-btn'>Add Promotion</Link>
             </Card>
         </div>
     </>)

@@ -29,12 +29,7 @@ export default function Remove()
         {books.map((book, k)=>
         <BookEdit key={k}
             todo='Remove'
-            title={book.title}
-            author={book.author}
-            cover={book.coverURL}
-            rating={book.rating}
-            price={book.price}
-            isbn={book.isbn}
+            details={book}
         />
     )}</div>
     </>);

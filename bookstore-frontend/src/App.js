@@ -9,6 +9,7 @@ import Login from './Register/Login';
 import Signup from './Register/Signup';
 import ForgotPassword from './Register/ForgotPassword';
 import Admin from './AdminHome/Admin';
+import AddPromotion from './AdminHome/AddPromotion';
 import AddBook from './AdminHome/AddBook';
 import RemoveBook from './AdminHome/RemoveBook';
 import Remove from './AdminHome/Remove';
@@ -44,7 +45,7 @@ export default function App() {
     } else {
       setAdminStatus(false);
     }
-  }, [])
+  }, [setAdminStatus])
 
   useEffect(() => {
     const token = localStorage.getItem(key) || sessionStorage.getItem(key);
@@ -68,6 +69,7 @@ export default function App() {
         <Route path='/Account' element={<AccountPage />} />
         <Route path='/Account/OrderHistory' element={<OrderHistory />} />
         <Route path='/Admin' element={adminStatus ? <Admin /> : <Unauthorized />} />
+        <Route path='/Admin/ManagePromotions/Add' element={adminStatus ? <AddPromotion /> : <Unauthorized />} />
         <Route path='/Admin/ManageBooks/Add' element={adminStatus ? <AddBook /> : <Unauthorized />} />
         <Route path='/Admin/ManageBooks/Remove' element={adminStatus ? <RemoveBook /> : <Unauthorized />} />
         <Route path='Admin/ManageBooks/RemoveBook/:isbn' element={adminStatus ? <Remove /> : <Unauthorized />} />

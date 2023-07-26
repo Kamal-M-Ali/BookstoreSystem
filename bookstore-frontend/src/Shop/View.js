@@ -10,13 +10,16 @@ export default function View(props)
     const { 
         book = {
             title : "Title",
-            desc : "This is a book description temporary placeholder.",
+            description : "This is a book description temporary placeholder.",
             author : "First Last",
-            genre : "Genre",
-            cover : "",
+            category : "Genre",
+            coverURL : "",
+            publisher : "publisher",
+            publicationYear : 2010,
+            inStock : 0,
             rating : 0.0,
             price : 0.00,
-            isbn: "000"
+            isbn: "00"
         }
     } = useLocation().state;
     function handleCart() {
@@ -31,16 +34,21 @@ export default function View(props)
             <h2>By: {book.author}</h2>
             <hr className='top-hr'/>
 
-            <p>{book.desc}</p>
-            <p><br/><br/><b>ISBN:</b> {book.isbn}</p>
-            <p><b>Genre:</b> {book.genre}</p>
+            <p>{book.description}</p>
+            <br/><br/>
+            
+            <p><b>Genre:</b> {book.category}</p>
+            <p><b>ISBN:</b> {book.isbn}</p>
+            <p><b>Publisher:</b> {book.publisher}</p>
+            <p><b>Published:</b> {book.publicationYear}</p>
+            <p><b>Quantity:</b> {book.inStock}</p>
 
             <hr className='top-hr bottom-hr'/>
             <h3>${book.price}</h3>
             <button onClick={handleCart}>Add to Cart</button>
         </Card>
         <div className='view-main'>
-            <img src={book.cover} alt={book.title}></img>
+            <img src={book.coverURL} alt={book.title}></img>
         </div>
     </div>
     </>);

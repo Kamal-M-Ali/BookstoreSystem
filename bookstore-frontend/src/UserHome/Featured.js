@@ -22,16 +22,7 @@ export default function Featured(props) {
         <div className='featured-display'>
             {books.filter(
                 book => book.bookType === props.cat).map((book, k) =>
-                    <Book key={k}
-                        title={book.title}
-                        author={book.author}
-                        cover={book.coverURL}
-                        rating={book.rating}
-                        price={book.price}
-                        isbn={book.isbn}
-                        desc={book.description}
-                        genre={book.category}
-                    />
+                    <Book key={k} details={book}/>
                 )}</div>
     );
 }

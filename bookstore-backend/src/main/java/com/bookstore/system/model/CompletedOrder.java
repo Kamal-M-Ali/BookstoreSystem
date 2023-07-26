@@ -29,6 +29,9 @@ public class CompletedOrder {
     private PaymentCard paymentCard;
     @OneToOne(cascade = CascadeType.ALL)
     private Address address;
+    @OneToOne(cascade = CascadeType.ALL)
+    private Promotion promotion = null;
+
 
     public int getOrderId() {
         return orderId;
@@ -92,5 +95,13 @@ public class CompletedOrder {
 
     public void setCustomer(Customer customer) {
         this.customer = customer;
+    }
+
+    public Promotion getPromotion() {
+        return promotion;
+    }
+
+    public void setPromotion(Promotion promotion) {
+        this.promotion = promotion;
     }
 }

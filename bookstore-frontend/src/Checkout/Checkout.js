@@ -2,14 +2,145 @@ import './Checkout.css';
 import Card from '../Card';
 import Navigation from '../Navigation';
 import { useNavigate } from 'react-router-dom';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import axios from 'axios';
 
 export default function Checkout() {
+    const API = 'http://localhost:8080/api/profile/:';
     const [step, setStep] = useState(0);
     const [editInfo, setEditInfo] = useState(false);
     const [editPaym, setEditPaym] = useState(false);
     const [editAddr, setEditAddr] = useState(false);
+    const [accountDetails, setAccountDetails] = useState(null);
+    const [selectedCard, setSelectedCard] = useState(null);
     const navigate = useNavigate();
+
+    function fetchData() {
+        const email = localStorage.getItem('email') || sessionStorage.getItem('email');
+
+        if (email) {
+            axios.get(API + email)
+                .then((res) => {
+                    // res.data=customer json data
+                    console.log(res.data);
+                    setAccountDetails(res.data);
+                })
+                .catch((err) => {
+                    console.log(err.response);
+                    setAccountDetails(null);
+                })
+        } else {
+            setAccountDetails(null);
+        }
+    }
+    useEffect(fetchData, [navigate])
+
+    function changeInfo(e) {
+        e.preventDefault();
+        const email = localStorage.getItem('email') || sessionStorage.getItem('email');
+
+        if (e.target.fullName.value === '' && e.target.phoneNumber.value === '') {
+            setEditInfo(false);
+            return;
+        }
+
+        if (email) {
+            axios.post("http://localhost:8080/api/change-personal-info/:" + email, null, {
+                params: {
+                    name: (e.target.fullName.value !== '' ? e.target.fullName.value : accountDetails.name),
+                    phoneNumber: (e.target.phoneNumber.value !== '' ? e.target.phoneNumber.value : accountDetails.phoneNumber)
+                }
+            }).then((res) => {
+                if (res.status === 200) {
+                    alert("Personal info changed");
+                    fetchData();
+                    setEditInfo(false);
+                }
+            }).catch((err) => {
+                console.log(err.response);
+                alert(typeof err.response.data === 'string' ? err.response.data : "[Error]: Couldn't change info")
+                setEditInfo(false);
+            })
+        }
+    }
+
+    function changeAddress(e) {
+        e.preventDefault();
+        const email = localStorage.getItem('email') || sessionStorage.getItem('email');
+
+        if (e.target.street.value === '' && e.target.city.value === ''
+            && e.target.state.value === '' && e.target.zipcode.value === '') {
+            setEditAddr(false);
+            return;
+        }
+
+        if (e.target.street.value === '' || e.target.city.value === ''
+            || e.target.state.value === '' || e.target.zipcode.value === '') {
+            alert('Please fill out all fields');
+            return;
+        }
+
+        if (email) {
+            axios.post("http://localhost:8080/api/change-address/:" + email, {
+                street: e.target.street.value,
+                city: e.target.city.value,
+                state: e.target.state.value,
+                zipcode: e.target.zipcode.value
+            }).then((res) => {
+                if (res.status === 200) {
+                    alert("Address updated");
+                    fetchData();
+                    setEditAddr(false);
+                }
+            }).catch((err) => {
+                console.log(err.response);
+                alert(typeof err.response.data === 'string' ? err.response.data : "[Error]: Couldn't change address")
+                setEditAddr(false);
+            })
+        }
+    }
+
+    function addPaymentCard(e) {
+        e.preventDefault();
+        const email = localStorage.getItem('email') || sessionStorage.getItem('email');
+
+        if (e.target.cardOwner.value === '' && e.target.cardNumber.value === ''
+            && e.target.expDate.value === '' && e.target.cvv.value === '') {
+            setEditPaym(false);
+            return;
+        }
+
+        if (e.target.cardOwner.value === '' && e.target.cardNumber.value === ''
+            && e.target.expDate.value === '' && e.target.cvv === '') {
+            alert('Please fill out all fields');
+            return;
+        }
+
+        if (email) {
+            axios.put("http://localhost:8080/api/add-payment/:" + email, {
+                cardOwner: e.target.cardOwner.value,
+                cardNumber: e.target.cardNumber.value,
+                expDate: e.target.expDate.value
+            }).then((res) => {
+                if (res.status === 200) {
+                    alert("Payment card added");
+                    fetchData();
+                    setEditPaym(false);
+                }
+            }).catch((err) => {
+                console.log(err.response);
+                alert(typeof err.response.data === 'string' ? err.response.data : "[Error]: Couldn't add payment card")
+                setEditPaym(false);
+            })
+        }
+    }
+
+    function applyPromotion(e) {
+        e.preventDefault();
+        // TODO
+    }
+
+
     const dummy_data = [
         {
             title: "The Great Gatsby",
@@ -42,26 +173,6 @@ export default function Checkout() {
         }
     ]
 
-    const dummy_info = {
-        personal: {
-            name: "First Last",
-            number: "000-000-0000"
-        },
-
-        payment: {
-            name: "First Last",
-            card: "0000 0000 0000 0000",
-            exp: "00/00",
-        },
-
-        address: {
-            street1: "Street 1",
-            street2: "Street 2",
-            state: "State",
-            zip: "Zip code"
-        },
-    }
-
     function countTotalPrice() {
         let price = 0;
         for (let i = 0; i < dummy_data.length; i++) {
@@ -72,122 +183,149 @@ export default function Checkout() {
 
     return (<>
         <Navigation />
-        <div className='checkout-page'> {
-            // FIRST STEP OF CHECKOUT
-            ((step) === 0 &&
-                <div className='checkout-pt0'>
-                    <Card className='confirm-shipping'>
-                        <h1>Shipping Information</h1>   
-                        <hr />
-                        <div>
-                            <div><h3>Personal Info</h3>
-                            {(!editInfo) ?
-                                <div>
-                                    <p>Name: {dummy_info.personal.name}</p>
-                                    <p>Phone Number: {dummy_info.personal.number}</p>
-                                    <button className='confirm-checkout-btn edit-btn' onClick={() => setEditInfo(true)}>Edit personal info</button>
-                                </div>
-                                :
-                                <form onSubmit={() => setEditInfo(false)}>
-                                    <input type='text' placeholder='Full Name' />
-                                    <input type='text' placeholder='Phone Number' />
-
-                                    <button className='confirm-checkout-btn edit-btn' type='submit'>Save</button>
-                                </form>
-                            } </div>
-                            
-                            <div><h3>Address</h3>
-                            {(!editAddr) ?
-                                <div>
-                                    <p>{dummy_info.address.street1}</p>
-                                    <p>{dummy_info.address.street2}</p>
-                                    <p>{dummy_info.address.state}, {dummy_info.address.zip}</p>
-                                    <button className='confirm-checkout-btn edit-btn' onClick={() => setEditAddr(true)}>Edit address</button>
-                                </div>
-                                :
-                                <form onSubmit={() => setEditAddr(false)}>
-                                    <input type='text' placeholder='Street Line 1' />
-                                    <input type='text' placeholder='Street Line 2' />
-                                    <input className='state' type='text' placeholder='State' />
-                                    <input className='zip' type='text' placeholder='Zip code' />
-
-                                    <button className='confirm-checkout-btn edit-btn' type='submit'>Save</button>
-                                </form>
-                            }</div>
-                        </div>
-                    </Card>
-
-                    <Card className='confirm-shipping'>
-                        <h1>Payment Method</h1>   
-                        <hr />
-                        <h3>Card</h3>
-                        {(!editPaym) ?
+        {(accountDetails !== null) ?
+            <div className='checkout-page'> {
+                // FIRST STEP OF CHECKOUT
+                ((step) === 0 &&
+                    <div className='checkout-pt0'>
+                        <Card className='confirm-shipping'>
+                            <h1>Shipping Information</h1>
+                            <hr />
                             <div>
-                                <p>{dummy_info.payment.name}</p>
-                                <p>{dummy_info.payment.card}</p>
-                                <p>Exp: {dummy_info.payment.exp}</p>
-                                <button className='confirm-checkout-btn edit-btn' onClick={() => setEditPaym(true)}>Edit payment method</button>
-                            </div>
-                            :
-                            <form onSubmit={() => setEditPaym(false)}>
-                                <input type='text' placeholder='Name on Card' />
-                                <input type='text' placeholder='Card number' />
-                                <input className='card-date' type='text' placeholder='Expiration date' />
-                                <input className='card-cvv' type='text' placeholder='CVV' />
-
-                                <button className='confirm-checkout-btn edit-btn' type='submit'>Save</button>
-                            </form>
-                        }
-                        <hr className/>
-                        <button className='confirm-checkout-btn' onClick={() => setStep(1)}>Next Step</button>
-                    </Card>
-                </div>)
-
-            // SECOND STEP OF CHECKOUT
-            || ((step) === 1 &&
-                <div className='checkout-pt1'>
-                    <Card className='confirm-shipping'>
-                        <h1>Shipping Information</h1>
-                        <hr />
-                        <div className='confirm-shipping-inner'>
-                            <div className='order-billing-info'>
                                 <h3>Personal Info</h3>
-                                <p>Name: {dummy_info.personal.name}</p>
-                                <p>Phone Number: {dummy_info.personal.number}</p>
+                                {(!editInfo) ?
+                                    <div>
+                                        <p>Name: {accountDetails.name}</p>
+                                        <p>Phone Number: {accountDetails.phoneNumber}</p>
+                                        <button className='confirm-checkout-btn' onClick={() => setEditInfo(true)}>Edit personal info</button>
+                                    </div>
+                                    :
+                                    <form onSubmit={changeInfo}>
+                                        <input type='text' name='fullName' placeholder='Full Name' />
+                                        <input type='text' name='phoneNumber' placeholder='Phone Number' />
 
-                                <h3>Address</h3>
-                                <p>{dummy_info.address.street1}</p>
-                                <p>{dummy_info.address.street2}</p>
-                                <p>{dummy_info.address.state}, {dummy_info.address.zip}</p>
+                                        <button className='confirm-checkout-btn' type='submit'>Finish</button>
+                                    </form>
+                                }
+
+                                <div><h3>Address</h3>
+                                    {(!editAddr) ?
+                                        <div>
+                                            <p>{accountDetails.address.street}</p>
+                                            <p>{accountDetails.address.city}</p>
+                                            <p>{accountDetails.address.state}, {accountDetails.address.zipcode}</p>
+                                            <button className='confirm-checkout-btn' onClick={() => setEditAddr(true)}>Edit address</button>
+                                        </div>
+                                        :
+                                        <form onSubmit={changeAddress}>
+                                            <input type='text' name='street' placeholder='Street' />
+                                            <input type='text' name='city' placeholder='City' />
+                                            <input className='state' name='state' type='text' placeholder='State' />
+                                            <input className='zip' name='zipcode' type='text' placeholder='Zip code' />
+
+                                            <button className='confirm-checkout-btn' type='submit'>Finish</button>
+                                        </form>
+                                    }
+                                </div>
+                            </div>
+                        </Card>
+
+                        <Card className='confirm-shipping'>
+                            <h1>Payment Method</h1>
+                            <hr />
+                            {(selectedCard === null) ? 
+                            ((!editPaym) ?
+                            (<>
+                                {accountDetails.paymentCards.map((paymentCard, k) =>
+                                    <div key={k}>
+                                        <h3>Card {k + 1}</h3>
+                                        <p>{paymentCard.cardOwner}</p>
+                                        <p>**** **** **** {paymentCard.lastFour}</p>
+                                        <p>Exp: {paymentCard.expDate}</p>
+                                        <div className='payment-opts'>
+                                            <button className='confirm-checkout-btn' onClick={() => setSelectedCard(paymentCard)}>Use this card</button>
+                                        </div>
+                                        {k !== accountDetails.paymentCards.length - 1 && <hr className='small-hr' />}
+                                    </div>
+                                )}
+                                {accountDetails.paymentCards.length < 3 &&
+                                    <button className='confirm-checkout-btn add-payment' onClick={() => setEditPaym(true)}>Add new card</button>}
+                            </>)
+                            :
+                            <form onSubmit={addPaymentCard}>
+                                <input type='text' name='cardOwner' placeholder='Name on Card' />
+                                <input type='text' name='cardNumber' placeholder='Card number' />
+                                <input className='card-date' name='expDate' type='text' placeholder='Expiration date' />
+                                <input className='card-cvv' name='cvv' type='text' placeholder='CVV' />
+
+                                <button className='confirm-checkout-btn' type='submit'>Finish</button>
+                            </form>)
+                            :
+                            <div>
+                                <p>{selectedCard.cardOwner}</p>
+                                <p>**** **** **** {selectedCard.lastFour}</p>
+                                <button className='confirm-checkout-btn' onClick={() => setSelectedCard(null)}>Change</button>
+                            </div>
+                            }
+                            <hr className />
+                            <button className='confirm-checkout-btn' onClick={
+                                () => { selectedCard === null ? alert("Must select a payment method") : setStep(1) }}>
+                                Next Step
+                            </button>
+                        </Card>
+                    </div>)
+
+                // SECOND STEP OF CHECKOUT
+                || ((step) === 1 &&
+                    <div className='checkout-pt1'>
+                        <Card className='confirm-shipping'>
+                            <h1>Shipping Information</h1>
+                            <hr />
+                            <div className='confirm-shipping-inner'>
+                                <div className='order-billing-info'>
+                                    <h3>Personal Info</h3>
+                                    <p>Name: {accountDetails.name}</p>
+                                    <p>Phone Number: {accountDetails.phoneNumber}</p>
+
+                                    <h3>Shipping Address</h3>
+                                    <p>{accountDetails.address.street}</p>
+                                    <p>{accountDetails.address.city}, {accountDetails.address.state} {accountDetails.address.zipcode}</p>
+                                </div>
+
+                                <div className='order-payment-info'>
+                                    <h3>Payment Card</h3>
+                                    <p>{selectedCard.cardOwner}</p>
+                                    <p>**** **** **** {selectedCard.lastFour}</p>
+                                </div>
                             </div>
 
-                            <div className='order-payment-info'>
-                                <h3>Payment Card</h3>
-                                <p>{dummy_info.payment.name}</p>
-                                <p>{dummy_info.payment.card}</p>
-                                <p>Exp: {dummy_info.payment.exp}</p>
-                            </div>
-                        </div>
-
-                    </Card>
-                    <Card className='confirm-cart-total'>
-                        <h1>Order Summary</h1>
-                        <hr />
-                        {dummy_data.map((book, k) =>
-                            <p className='checkout-book-title'>{book.title}</p>
-                        )}
-                        <h2 className='confirm-cart-h2'><b>Total:</b> ${countTotalPrice()}</h2>
-                        <button className='confirm-checkout-btn' onClick={() => setStep(2)}>Place Order</button>
-                    </Card>
-                </div>)
+                        </Card>
+                        <Card className='confirm-cart-total'>
+                            <h1>Order Summary</h1>
+                            <hr />
+                            {dummy_data.map((book, k) =>
+                                <p className='checkout-book-title'>{book.title} - ${book.price}</p>
+                            )}
+                            <form className='promo-code' onSubmit={applyPromotion}>
+                            <input type='text' name='promoCode' placeholder='Apply promo code' />
+                            </form>
+                            <h2><b>Total:</b> ${countTotalPrice()}</h2>
+                            <button className='confirm-checkout-btn' onClick={() => setStep(2)}>Place Order</button>
+                        </Card>
+                    </div>)
 
 
-            // FINAL STEP OF CHECKOUT
-            || ((step) === 2 &&
-                <Card className='checkout-pt2'>
-                    <label>Your order is complete! A confirmation email has been sent your email addresss.</label>
-                    <button className='confirm-checkout-btn' onClick={() => { setStep(0); navigate('/') }}>OK</button>
-                </Card>)
-        } </div>
+                // FINAL STEP OF CHECKOUT
+                || ((step) === 2 &&
+                    <Card className='checkout-pt2'>
+                        <label>Your order is complete! A confirmation email has been sent your email addresss.</label>
+                        <button className='confirm-checkout-btn' onClick={() => { setStep(0); navigate('/') }}>OK</button>
+                    </Card>)
+            } </div>
+            :
+            <div>
+                Login to checkout
+            </div>
+        }
     </>);
 }

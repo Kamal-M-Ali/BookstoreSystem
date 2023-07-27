@@ -13,12 +13,14 @@ export default function Checkout() {
     const [editAddr, setEditAddr] = useState(false);
     const [accountDetails, setAccountDetails] = useState(null);
     const [selectedCard, setSelectedCard] = useState(null);
+    const [cartItems, setCartItems] = useState([]);
     const navigate = useNavigate();
 
     function fetchData() {
         const email = localStorage.getItem('email') || sessionStorage.getItem('email');
 
         if (email) {
+            // get user account info
             axios.get(API + email)
                 .then((res) => {
                     setAccountDetails(res.data);
@@ -27,7 +29,20 @@ export default function Checkout() {
                     console.log(err.response);
                     setAccountDetails(null);
                 })
+
+            // get customer's cart
+            axios.get("http://localhost:8080/api/cart/:" + email)
+                .then((res) => {
+                    setCartItems(res.data.cartBooks);
+                })
+                .catch((err) => {
+                    console.log(err.response);
+                    setCartItems([]);
+                    navigate('/');
+                    alert("[Error] Unable to retrieve cart");
+                })
         } else {
+            setCartItems([]);
             setAccountDetails(null);
         }
     }
@@ -133,50 +148,25 @@ export default function Checkout() {
         }
     }
 
+    function countTotalPrice() {
+        let price = 0;
+        for (let i = 0; i < cartItems.length; i++) {
+            price += cartItems[i].book.price * cartItems[i].quantity;
+        }
+        return price;
+    }
+
     function applyPromotion(e) {
         e.preventDefault();
         // TODO
     }
 
+    function placeOrder() {
+        // TODO
 
-    const dummy_data = [
-        {
-            title: "The Great Gatsby",
-            desc: "This is a book description temporary placeholder.",
-            genre: "Young Adult",
-            author: "F-Scott Fitzgerald",
-            cover: "https://s26162.pcdn.co/wp-content/uploads/2018/02/gatsby-original2.jpg",
-            rating: 4.3,
-            price: 7.99,
-            isbn: "000-000"
-        },
-        {
-            title: "Divine Rivals",
-            desc: "This is a book description temporary placeholder.",
-            author: "Rebecca Ross",
-            cover: "https://storage.googleapis.com/du-prd/books/images/9781250857439.jpg",
-            rating: 4.7,
-            price: 17.99,
-            isbn: "000-007"
-        },
-        {
-            title: "Warrior Girl Unearthed",
-            desc: "This is a book description temporary placeholder.",
-            author: "Angeline Boulley",
-            genre: "Young Adult",
-            cover: "https://storage.googleapis.com/du-prd/books/images/9781250766588.jpg",
-            rating: 4.6,
-            price: 14.99,
-            isbn: "000-010"
-        }
-    ]
 
-    function countTotalPrice() {
-        let price = 0;
-        for (let i = 0; i < dummy_data.length; i++) {
-            price += dummy_data[i].price;
-        }
-        return Math.round(price * 100) / 100;
+        // advance to confirmation screen
+        setStep(2)
     }
 
     return (<>
@@ -231,39 +221,39 @@ export default function Checkout() {
                         <Card className='confirm-shipping'>
                             <h1>Payment Method</h1>
                             <hr />
-                            {(selectedCard === null) ? 
-                            ((!editPaym) ?
-                            (<>
-                                {accountDetails.paymentCards.map((paymentCard, k) =>
-                                    <div key={k}>
-                                        <h3>Card {k + 1}</h3>
-                                        <p>{paymentCard.cardOwner}</p>
-                                        <p>**** **** **** {paymentCard.lastFour}</p>
-                                        <p>Exp: {paymentCard.expDate}</p>
-                                        <div className='payment-opts'>
-                                            <button className='confirm-checkout-btn' onClick={() => setSelectedCard(paymentCard)}>Use this card</button>
-                                        </div>
-                                        {k !== accountDetails.paymentCards.length - 1 && <hr className='small-hr' />}
-                                    </div>
-                                )}
-                                {accountDetails.paymentCards.length < 3 &&
-                                    <button className='confirm-checkout-btn add-payment' onClick={() => setEditPaym(true)}>Add new card</button>}
-                            </>)
-                            :
-                            <form onSubmit={addPaymentCard}>
-                                <input type='text' name='cardOwner' placeholder='Name on Card' />
-                                <input type='text' name='cardNumber' placeholder='Card number' />
-                                <input className='card-date' name='expDate' type='text' placeholder='Expiration date' />
-                                <input className='card-cvv' name='cvv' type='text' placeholder='CVV' />
+                            {(selectedCard === null) ?
+                                ((!editPaym) ?
+                                    (<>
+                                        {accountDetails.paymentCards.map((paymentCard, k) =>
+                                            <div key={k}>
+                                                <h3>Card {k + 1}</h3>
+                                                <p>{paymentCard.cardOwner}</p>
+                                                <p>**** **** **** {paymentCard.lastFour}</p>
+                                                <p>Exp: {paymentCard.expDate}</p>
+                                                <div className='payment-opts'>
+                                                    <button className='confirm-checkout-btn' onClick={() => setSelectedCard(paymentCard)}>Use this card</button>
+                                                </div>
+                                                {k !== accountDetails.paymentCards.length - 1 && <hr className='small-hr' />}
+                                            </div>
+                                        )}
+                                        {accountDetails.paymentCards.length < 3 &&
+                                            <button className='confirm-checkout-btn add-payment' onClick={() => setEditPaym(true)}>Add new card</button>}
+                                    </>)
+                                    :
+                                    <form onSubmit={addPaymentCard}>
+                                        <input type='text' name='cardOwner' placeholder='Name on Card' />
+                                        <input type='text' name='cardNumber' placeholder='Card number' />
+                                        <input className='card-date' name='expDate' type='text' placeholder='Expiration date' />
+                                        <input className='card-cvv' name='cvv' type='text' placeholder='CVV' />
 
-                                <button className='confirm-checkout-btn' type='submit'>Finish</button>
-                            </form>)
-                            :
-                            <div>
-                                <p>{selectedCard.cardOwner}</p>
-                                <p>**** **** **** {selectedCard.lastFour}</p>
-                                <button className='confirm-checkout-btn' onClick={() => setSelectedCard(null)}>Change</button>
-                            </div>
+                                        <button className='confirm-checkout-btn' type='submit'>Finish</button>
+                                    </form>)
+                                :
+                                <div>
+                                    <p>{selectedCard.cardOwner}</p>
+                                    <p>**** **** **** {selectedCard.lastFour}</p>
+                                    <button className='confirm-checkout-btn' onClick={() => setSelectedCard(null)}>Change</button>
+                                </div>
                             }
                             <hr className />
                             <button className='confirm-checkout-btn' onClick={
@@ -301,14 +291,14 @@ export default function Checkout() {
                         <Card className='confirm-cart-total'>
                             <h1>Order Summary</h1>
                             <hr />
-                            {dummy_data.map((book, k) =>
-                                <p className='checkout-book-title'>{book.title} - ${book.price}</p>
+                            {cartItems.map((cartItem) =>
+                                <p className='checkout-book-title'>{cartItem.quantity} {cartItem.book.title} - ${cartItem.book.price}</p>
                             )}
                             <form className='promo-code' onSubmit={applyPromotion}>
-                            <input type='text' name='promoCode' placeholder='Apply promo code' />
+                                <input type='text' name='promoCode' placeholder='Apply promo code' />
                             </form>
-                            <h2><b>Total:</b> ${countTotalPrice()}</h2>
-                            <button className='confirm-checkout-btn' onClick={() => setStep(2)}>Place Order</button>
+                            <h2><b>Total:</b> ${countTotalPrice().toFixed(2)}</h2>
+                            <button className='confirm-checkout-btn' onClick={placeOrder}>Place Order</button>
                         </Card>
                     </div>)
 

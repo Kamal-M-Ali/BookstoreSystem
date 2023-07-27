@@ -17,6 +17,8 @@ public class CustomerService {
     @Autowired
     private PaymentCardService paymentCardService;
     @Autowired
+    private CartService cartService;
+    @Autowired
     private PasswordService passwordService;
     @Autowired
     private EmailService emailService;
@@ -239,6 +241,45 @@ public class CustomerService {
 
         if (customer != null) {
             return ResponseEntity.ok().body(customer.getCompletedOrders());
+        }
+        return ResponseEntity.badRequest().body("Could not find account.");
+    }
+
+    public ResponseEntity<?> getCart(String email) {
+        Customer customer = customerRepository.findByEmail(email);
+
+        if (customer != null) {
+            return ResponseEntity.ok().body(customer.getCart());
+        }
+        return ResponseEntity.badRequest().body("Could not find account.");
+    }
+
+    public ResponseEntity<String> initCart(String email, Integer[] bookIds) {
+        Customer customer = customerRepository.findByEmail(email);
+
+        if (customer != null) {
+            cartService.mergeCart(customer, bookIds);
+            return ResponseEntity.ok().body("Updated cart");
+        }
+        return ResponseEntity.badRequest().body("Could not find account.");
+    }
+
+    public ResponseEntity<String> addToCart(String email, Book book) {
+        Customer customer = customerRepository.findByEmail(email);
+
+        if (customer != null) {
+            cartService.addToCart(customer.getCart(), book);
+            return ResponseEntity.ok().body("Added to cart");
+        }
+        return ResponseEntity.badRequest().body("Could not find account.");
+    }
+
+    public ResponseEntity<String> delFromCart(String email, Book book) {
+        Customer customer = customerRepository.findByEmail(email);
+
+        if (customer != null) {
+            cartService.delFromCart(customer.getCart(), book);
+            return ResponseEntity.ok().body("Deleted from cart");
         }
         return ResponseEntity.badRequest().body("Could not find account.");
     }

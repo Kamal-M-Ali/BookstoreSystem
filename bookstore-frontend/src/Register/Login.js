@@ -5,7 +5,7 @@ import Navigation from '../Navigation';
 import { useState } from 'react';
 import axios from 'axios';
 
-export default function Login() {
+export default function Login() {   
     const navigate = useNavigate();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -22,6 +22,27 @@ export default function Login() {
             sessionStorage.setItem("email", email)
         }
         axios.defaults.headers.common = {'Authorization': `Bearer ${jwtToken}`}
+
+        // post cart session storage
+        let cart = sessionStorage.getItem('cart');
+        if (cart !== null && cart.length > 0) {
+            cart = JSON.parse(cart);
+            
+            let books = [];
+            for (let i = 0; i < cart.length; i++) {
+                for (let j = 0; j < cart[i].quantity; j++) {
+                    books.push(cart[i].book.id);
+                }
+            }
+
+            axios.post("http://localhost:8080/api/initialize-cart/:" + email, books)
+            .then((res) => {
+                console.log("Initialized cart success");
+            })
+            .catch((err) => {
+                console.log(err);
+            }) 
+        }
     }
 
     function handleSubmit(e) {

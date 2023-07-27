@@ -42,6 +42,11 @@
     font-weight: normal;
 }
 
+.no-cart-items {
+    margin: auto;
+    text-align: center;
+}
+
 .cart-page hr {
     margin-top: 16px;
     display: block;

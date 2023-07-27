@@ -21,8 +21,6 @@ export default function Checkout() {
         if (email) {
             axios.get(API + email)
                 .then((res) => {
-                    // res.data=customer json data
-                    console.log(res.data);
                     setAccountDetails(res.data);
                 })
                 .catch((err) => {
@@ -323,8 +321,8 @@ export default function Checkout() {
                     </Card>)
             } </div>
             :
-            <div>
-                Login to checkout
+            <div className='checkout-error-page'>
+                <h1>Login to checkout</h1>
             </div>
         }
     </>);

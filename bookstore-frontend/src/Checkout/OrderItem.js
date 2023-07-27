@@ -7,9 +7,9 @@ export default function OrderItem(props) {
 
     return (
         <Card className='order-item'>
-            <img src={props.cover} alt={props.description} className='order-cover-img' />
-            <h2 className='order-book-listing'>{props.title} by: {props.author} [{props.rating} / 5⭐]</h2>
-            <h2 className='order-book-price'>${props.price}</h2>
+            <img src={props.details.coverURL} alt={props.details.title} className='order-cover-img' />
+            <h2 className='order-book-listing'>{props.details.title} by: {props.details.author} [{props.details.rating} / 5⭐]</h2>
+            <h2 className='order-book-price'>${props.details.price}</h2>
             <h2 className='order-book-qty'>Quantity: 1</h2>
 
             {loggedIn &&

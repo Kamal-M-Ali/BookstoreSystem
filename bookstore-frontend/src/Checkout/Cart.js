@@ -7,10 +7,10 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
 export default function Cart() {
-    const API = "http://localhost:8000/api/cart";
+    const API = "http://localhost:8080/api/cart/:";
     const key = 'jwtToken';
     let loggedIn = sessionStorage.getItem(key) || localStorage.getItem(key) || false;
-    const [cartItems, setCartItems] = useState([]);
+    const [ cartItems, setCartItems ] = useState([]);
 
     function fetchData() {
         if (loggedIn) {
@@ -19,7 +19,7 @@ export default function Cart() {
             if (email) {
                 axios.get(API + email)
                     .then((res) => {
-                        setCartItems(res.data);
+                        setCartItems(res.data.cartBooks);
                     })
                     .catch((err) => {
                         console.log(err.response);
@@ -38,7 +38,7 @@ export default function Cart() {
     function countTotalPrice() {
         let price = 0;
         for (let i = 0; i < cartItems.length; i++) {
-            price += cartItems[i].book.price;
+            price += cartItems[i].book.price * cartItems[i].quantity;
         }
         return price;
     }
@@ -54,7 +54,8 @@ export default function Cart() {
                         {cartItems.map((cartItem, k) =>
                             <OrderItem key={k}
                                 details={cartItem.book}
-                                qty={cartItem.qty}
+                                qty={cartItem.quantity}
+                                updateQty={fetchData}
                             />)
                         }
                     </div>

@@ -7,6 +7,12 @@ export default function Nagivation(props)
     let loggedIn = sessionStorage.getItem(key) || localStorage.getItem(key) || false;
     const navigate = useNavigate();
 
+    function handleLogout() {
+        sessionStorage.clear(); 
+        localStorage.clear(); 
+        navigate('/');
+    }
+
     return (
     <div className='nav-bar'>
         <p className='home-button'>
@@ -18,7 +24,7 @@ export default function Nagivation(props)
             </li>
             <li className='cart' key='cart'>
                 <Link className='nav-link' to='/Cart'>Cart</Link>
-                <span className='cart-count'>{props.cart || 0}</span>
+                <span className='cart-count'>{0}</span>
             </li>
 
             {(loggedIn) ? 
@@ -27,7 +33,7 @@ export default function Nagivation(props)
                     <Link className='nav-link' to='/Account'>Account</Link>
                 </li>
                 <li key='logout'>
-                    <button className='nav-button' onClick={() => {sessionStorage.clear(); localStorage.clear(); navigate('/')}}>Logout</button>
+                    <button className='nav-button' onClick={handleLogout}>Logout</button>
                 </li>
                 </>    
                 :

@@ -5,7 +5,7 @@ import Navigation from '../Navigation';
 import { useState } from 'react';
 import axios from 'axios';
 
-export default function Login() {
+export default function Login() {   
     const navigate = useNavigate();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -22,6 +22,27 @@ export default function Login() {
             sessionStorage.setItem("email", email)
         }
         axios.defaults.headers.common = {'Authorization': `Bearer ${jwtToken}`}
+
+        // post cart session storage
+        let cart = sessionStorage.getItem('cart');
+        if (cart !== null && cart.length > 0) {
+            cart = JSON.parse(cart);
+            
+            let books = [];
+            for (let i = 0; i < cart.length; i++) {
+                for (let j = 0; j < cart[i].quantity; j++) {
+                    books.push(cart[i].book.id);
+                }
+            }
+
+            axios.post("http://localhost:8080/api/initialize-cart/:" + email, books)
+            .then((res) => {
+                console.log("Initialized cart success");
+            })
+            .catch((err) => {
+                console.log(err);
+            }) 
+        }
     }
 
     function handleSubmit(e) {
@@ -39,7 +60,7 @@ export default function Login() {
             }
         }).catch((err) => {
             if (err.response.status === 401) {
-                alert("Activate your account.");
+                alert(err.response.data); // inactive/suspended
             } else {
                 axios.post(API + "/admin", { // If customer didn't exist, check for admin
                     email: email,
@@ -56,6 +77,12 @@ export default function Login() {
                 })
             }
         })
+    }
+
+    function handleLogout() {
+        sessionStorage.clear(); 
+        localStorage.clear(); 
+        navigate('/');
     }
 
     return (<>
@@ -93,7 +120,7 @@ export default function Login() {
                 (<div className='login-error'>
                     <h1>You're already logged in.</h1>
                     <div className='login-btn logout'>
-                        <button onClick={() => { sessionStorage.removeItem(key); localStorage.removeItem(key); navigate('/') }}>Logout</button>
+                        <button onClick={handleLogout}>Logout</button>
                     </div>
                 </div>)
         }

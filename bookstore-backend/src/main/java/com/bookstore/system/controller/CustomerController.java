@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+
 @RestController
 @CrossOrigin
 public class CustomerController {
@@ -71,5 +72,25 @@ public class CustomerController {
     @GetMapping("/api/orders/:{email}")
     public ResponseEntity<?> getAllOrders(@PathVariable String email) {
         return customerService.getAllOrders(email);
+    }
+
+    @GetMapping("api/cart/:{email}")
+    public ResponseEntity<?> getCart(@PathVariable String email) {
+        return customerService.getCart(email);
+    }
+
+    @PostMapping("api/initialize-cart/:{email}")
+    public ResponseEntity<String> initCart(@PathVariable String email, @RequestBody Integer[] bookIds) {
+        return customerService.initCart(email, bookIds);
+    }
+
+    @PutMapping("api/cart-book/:{email}")
+    public ResponseEntity<String> addToCart(@PathVariable String email, @Valid @RequestBody Book book) {
+        return customerService.addToCart(email, book);
+    }
+
+    @PostMapping("api/del-cart-book/:{email}")
+    public ResponseEntity<String> delFromCart(@PathVariable String email, @Valid @RequestBody Book book) {
+        return customerService.delFromCart(email, book);
     }
 }

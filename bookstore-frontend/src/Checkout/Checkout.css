@@ -5,6 +5,10 @@
     display: block;
 }
 
+.checkout-error-page {
+    text-align: center;
+}
+
 .checkout-page input {
     font: inherit;
     padding: 1rem;

@@ -29,35 +29,35 @@
 .view-details-btn {
     cursor: pointer;
     padding: 1rem 2rem;
-    border: 1px solid #263238;
-    background-color: #455A64;
     color: white;
     border-radius: 4px;
     font-weight: bold;
     font-size: 1.2em;
 }
-.view-details-btn:hover,
-.view-details-btn:active {
+
+.go-to-view {
+    border: 1px solid #263238;
+    background-color: #455A64;
+}
+.go-to-view:hover,
+.go-to-view:active {
     background-color: #37474F;
 }
 
-.addToCart button {
-    cursor: pointer;
-    padding: 1rem 2rem;
+.to-cart {
     background-color: #0097A7;
     border: 1px solid #00838F;
-    color: #e6e6e6;
-    border-radius: 4px;
-    font-weight: bold;
-    font-size: 1.2em;
+}
+.to-cart:hover,
+.to-cart:active {
+    background-color: #00838F;
 }
 
-.buttonSpan {
+.button-span {
     display: flex;
     flex-direction: row;
 }
 
-.buttonSpan button {
-    margin-left: 0.5em;
-    margin-right: 0.5em;
+.button-span button {
+    margin: 0 0.4em;
 }

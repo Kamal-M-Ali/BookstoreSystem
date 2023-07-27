@@ -17,8 +17,6 @@ export default function AccountPage() {
         if (email) {
             axios.get(API + email)
                 .then((res) => {
-                    // res.data=customer json data
-                    console.log(res.data);
                     setAccountDetails(res.data);
                 })
                 .catch((err) => {
@@ -125,8 +123,8 @@ export default function AccountPage() {
         const email = localStorage.getItem('email') || sessionStorage.getItem('email');
 
         if (e.target.cardOwner.value === '' && e.target.cardNumber.value === '' 
-        && e.target.expDate.value === '' && e.target.cvv === '') {
-            setEditAddr(false);
+        && e.target.expDate.value === '' && e.target.cvv.value === '') {
+            setEditPaym(false);
             return;
         }
 

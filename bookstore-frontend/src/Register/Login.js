@@ -39,7 +39,7 @@ export default function Login() {
             }
         }).catch((err) => {
             if (err.response.status === 401) {
-                alert("Activate your account.");
+                alert(err.response.data); // inactive/suspended
             } else {
                 axios.post(API + "/admin", { // If customer didn't exist, check for admin
                     email: email,
@@ -56,6 +56,12 @@ export default function Login() {
                 })
             }
         })
+    }
+
+    function handleLogout() {
+        sessionStorage.clear(); 
+        localStorage.clear(); 
+        navigate('/');
     }
 
     return (<>
@@ -93,7 +99,7 @@ export default function Login() {
                 (<div className='login-error'>
                     <h1>You're already logged in.</h1>
                     <div className='login-btn logout'>
-                        <button onClick={() => { sessionStorage.removeItem(key); localStorage.removeItem(key); navigate('/') }}>Logout</button>
+                        <button onClick={handleLogout}>Logout</button>
                     </div>
                 </div>)
         }

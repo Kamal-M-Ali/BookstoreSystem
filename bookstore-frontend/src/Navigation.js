@@ -24,7 +24,6 @@ export default function Nagivation(props)
             </li>
             <li className='cart' key='cart'>
                 <Link className='nav-link' to='/Cart'>Cart</Link>
-                <span className='cart-count'>{0}</span>
             </li>
 
             {(loggedIn) ? 

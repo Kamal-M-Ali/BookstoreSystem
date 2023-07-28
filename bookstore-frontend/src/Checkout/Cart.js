@@ -19,7 +19,7 @@ export default function Cart() {
             if (email) {
                 axios.get(API + email)
                     .then((res) => {
-                        setCartItems(res.data.cartBooks);
+                        setCartItems(res.data.cartBooks.sort((a, b) => a.book.title.localeCompare(b.book.title)));
                     })
                     .catch((err) => {
                         console.log(err.response);
@@ -54,7 +54,7 @@ export default function Cart() {
                         {cartItems.map((cartItem, k) =>
                             <OrderItem key={k}
                                 details={cartItem.book}
-                                qty={cartItem.quantity}
+                                quantity={cartItem.quantity}
                                 updateQty={fetchData}
                             />)
                         }

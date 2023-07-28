@@ -12,7 +12,7 @@ import java.util.Collection;
 public abstract class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int userId;
+    private int id;
     @NotBlank(message = "Name cannot be blank")
     private String name;
     @NotBlank(message = "Password cannot be blank")
@@ -24,12 +24,12 @@ public abstract class User implements UserDetails {
 
     private String verificationToken;
 
-    public int getUserId() {
-        return userId;
+    public int getId() {
+        return id;
     }
 
-    public void setUserId(int userId) {
-        this.userId = userId;
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getName() {

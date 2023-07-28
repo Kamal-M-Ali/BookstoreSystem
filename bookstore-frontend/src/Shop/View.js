@@ -2,11 +2,14 @@ import './View.css';
 import Card from '../Card';
 import Navigation from '../Navigation';
 import { useLocation } from 'react-router-dom';
-import { useState } from 'react';
+import axios from 'axios';
 
 export default function View(props)
 {
-    const [cart, setCart] = useState(0);
+    const API = "http://localhost:8080/api/cart-book/:";
+    const key = 'jwtToken';
+    let loggedIn = sessionStorage.getItem(key) || localStorage.getItem(key) || false;
+
     const { 
         book = {
             title : "Title",
@@ -22,12 +25,39 @@ export default function View(props)
             isbn: "00"
         }
     } = useLocation().state;
-    function handleCart() {
-        setCart(cart + 1);
+
+    function handleCart(book) {
+        if (loggedIn) {
+            const email = localStorage.getItem('email') || sessionStorage.getItem('email');
+
+            if (email) {
+                axios.put(API + email, book)
+                    .then((res) => {
+                        // added to cart success
+                    })
+                    .catch((err) => {
+                        console.log("Failed to add item to cart.");
+                    })
+            }
+        } else {
+            let cart = sessionStorage.getItem('cart');
+            cart = (cart === null) ? [] : JSON.parse(cart);
+
+            for (let i = 0; i < cart.length; i++) {
+                if (cart[i].book.title === book.title) {
+                    cart[i].quantity += 1;
+                    sessionStorage.setItem('cart', JSON.stringify(cart));
+                    return;
+                }
+            }
+
+            cart.push({ book: book, quantity: 1 })
+            sessionStorage.setItem('cart', JSON.stringify(cart));
+        }
     }
 
     return (<>
-    <Navigation cart={cart}/>
+    <Navigation/>
     <div className='view-page'>
         <Card className='view-details'>
             <h1>{book.title} [{book.rating} / 5⭐]</h1>
@@ -45,7 +75,7 @@ export default function View(props)
 
             <hr className='top-hr bottom-hr'/>
             <h3>${book.price}</h3>
-            <button onClick={handleCart}>Add to Cart</button>
+            <button onClick={()=>{handleCart(book)}}>Add to Cart</button>
         </Card>
         <div className='view-main'>
             <img src={book.coverURL} alt={book.title}></img>

@@ -17,7 +17,7 @@ public class PaymentCard {
     private String cardOwner;
     @NotBlank(message = "Expiration date cannot be blank")
     private String expDate;
-    @JsonBackReference
+    @JsonBackReference(value = "paymentCards")
     @ManyToOne
     @JoinColumn(name = "customer_id")
     private Customer customer;

@@ -164,70 +164,21 @@ export default function Checkout() {
     function applyPromotion(e) { // Graham Addition this whole function
         e.preventDefault();
         let promoExists = false;
-        let rowExists = true;
-        let currID = 1;
         let percentOff;
-        let startDate;
-        let endDate;
-        while (!promoExists && rowExists) {
-            axios.get(promoAPI, { //FIXME! Does not work for some reason
-                params: {
-                    code: e.target.promoCode.value
-                }
-            }).then((res) => {
-                if (res.data.code === e.target.promoCode.value) {
-                    promoExists = true;
-                    percentOff = res.data.percentage;
-                    startDate = res.data.start;
-                    endDate = res.data.end;
-                } else {
-                    currID = currID + 1;
-                }
-            }).catch((err) => {
-                rowExists = false;
-                console.log(err.response);
-                alert(typeof err.response.data === 'string' ? err.response.data : "[Error]: Promo code does not exist")
-            })
-        } // end while
-
-        // Check that the promo date is valid
-        if (promoExists) {
-            let date = new Date();
-            let day = date.getDate();
-            let month = date.getMonth();
-            let year = date.getFullYear();
-            let startYear = startDate.substring(0,4);
-            let endYear = endDate.substring(0,4);
-            if (parseInt(startYear) > year || parseInt(endYear) < year) {
-                promoExists = false;
-                alert("Promo is out of date")
-            } else if (parseInt(startYear === year)) {
-                let startMonth = startDate.substring(5, 7);
-                if (parseInt(startMonth) > month) {
-                    promoExists = false;
-                    alert("Promo is out of date")
-                } else if (parseInt(startMonth) === month) {
-                    if (parseInt(startDate.substring(8)) > day) {
-                        promoExists = false;
-                        alert("Promo is out of date")
-                    } // if day
-                } // if month
-            } else if (parseInt(endYear) === year) {
-                let endMonth = endDate.substring(5, 7);
-                if (parseInt(endMonth) < month) {
-                    promoExists = false;
-                    alert("Promo is out of date")
-                } else if (parseInt(endMonth) === month) {
-                    if (parseInt(endDate.substring(8)) < day) {
-                        promoExists = false;
-                        alert("Promo is out of date")
-                    } // if day
-                } // if month
-            } // if year
-            if (promoExists) {
-                localStorage.setItem("promoApplied", percentOff);
+        axios.get(promoAPI, null, { //FIXME! Does not work for some reason
+            params: {
+                code: e.target.promoCode.value
             }
-        } // end if
+        }).then((res) => {
+            promoExists = true;
+            percentOff = res.data.percentage;
+        }).catch((err) => {
+            console.log(err.response);
+            alert(typeof err.response.data === 'string' ? err.response.data : "[Error]: Promo code does not exist")
+        })
+        if (promoExists) {
+            localStorage.setItem("promoApplied", percentOff);
+        }
     } // end apply promotion
 
     function placeOrder() {

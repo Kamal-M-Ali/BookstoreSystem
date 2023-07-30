@@ -22,7 +22,7 @@ public class Customer extends User {
     @Valid
     private Address address;
 
-    @JsonManagedReference
+    @JsonManagedReference(value = "paymentCards")
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     @NotNull(message = "Must add a payment card")
     @Valid
@@ -31,7 +31,7 @@ public class Customer extends User {
     @OneToOne(cascade = CascadeType.ALL)
     private Cart cart;
 
-    @JsonManagedReference
+    @JsonManagedReference(value = "completedOrders")
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     private Set<CompletedOrder> completedOrders;
 

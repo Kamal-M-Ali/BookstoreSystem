@@ -22,11 +22,11 @@ public class CompletedOrder {
     private Date orderedDate;
     private ORDER_STATUS orderStatus;
     private int totalPrice;
-    @JsonBackReference
+    @JsonBackReference(value = "completedOrders")
     @ManyToOne
     @JoinColumn(name = "customer_id")
     private Customer customer;
-    @JsonManagedReference
+    @JsonManagedReference(value = "orderedBooks")
     @OneToMany(mappedBy = "completedOrder", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     private Set<CartBook> orderedBooks;
     @OneToOne(cascade = CascadeType.ALL)

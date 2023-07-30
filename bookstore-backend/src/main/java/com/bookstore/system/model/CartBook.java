@@ -11,11 +11,11 @@ public class CartBook {
     @OneToOne
     private Book book;
     private int quantity;
-    @JsonBackReference
+    @JsonBackReference(value = "orderedBooks")
     @ManyToOne
     @JoinColumn(name = "completedOrder_id")
     private CompletedOrder completedOrder;
-    @JsonBackReference
+    @JsonBackReference(value = "cartBooks")
     @ManyToOne
     @JoinColumn(name = "cart_id")
     private Cart cart;

@@ -14,10 +14,13 @@ export default function Checkout() {
     const [accountDetails, setAccountDetails] = useState(null);
     const [selectedCard, setSelectedCard] = useState(null);
     const [cartItems, setCartItems] = useState([]);
+    const [appliedPromo, setAppliedPromo] = useState(null);
     const navigate = useNavigate();
+    const promoAPI = 'http://localhost:8080/api/get-promo?code='; // Graham Addition
 
     function fetchData() {
         const email = localStorage.getItem('email') || sessionStorage.getItem('email');
+        localStorage.setItem("promoApplied", 0); // Graham Addition
 
         if (email) {
             // get user account info
@@ -156,14 +159,26 @@ export default function Checkout() {
         return price;
     }
 
-    function applyPromotion(e) {
+    function applyPromotion(e) { // Graham Addition this whole function
         e.preventDefault();
-        // TODO
-    }
+
+        if (e.target.promoCode.value === '') {
+            setAppliedPromo(null);
+            return;
+        }
+
+        axios.get(promoAPI + e.target.promoCode.value)
+            .then((res) => {
+                setAppliedPromo(res.data);
+            }).catch((err) => {
+                console.log(err.response);
+                alert(typeof err.response.data === 'string' ? err.response.data : "[Error]: Unable to apply promotion");
+            })
+    } // end apply promotion
 
     function placeOrder() {
         // TODO
-
+        let price = countTotalPrice() * ((100 - appliedPromo.percentage) / 100);
 
         // advance to confirmation screen
         setStep(2)
@@ -297,7 +312,24 @@ export default function Checkout() {
                             <form className='promo-code' onSubmit={applyPromotion}>
                                 <input type='text' name='promoCode' placeholder='Apply promo code' />
                             </form>
-                            <h2><b>Total:</b> ${countTotalPrice().toFixed(2)}</h2>
+                            {appliedPromo === null ?
+                                <h2><b>Total:</b> ${countTotalPrice().toFixed(2)}</h2>
+                                :
+                                <div>
+                                    <h2>
+                                        <strike>
+                                            <b>Total: </b>
+                                            ${countTotalPrice().toFixed(2)}
+                                        </strike>
+                                    </h2>
+                                    <p>Code: {appliedPromo.code} ~ {appliedPromo.percentage}%</p>
+                                    <h2>
+                                        <b>New Total: </b>
+                                        ${(countTotalPrice() * ((100 - appliedPromo.percentage) / 100)).toFixed(2)}
+                                    </h2>
+                                </div>
+                            }
+
                             <button className='confirm-checkout-btn' onClick={placeOrder}>Place Order</button>
                         </Card>
                     </div>)

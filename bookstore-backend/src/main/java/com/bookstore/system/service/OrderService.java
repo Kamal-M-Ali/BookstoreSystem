@@ -28,14 +28,14 @@ public class OrderService {
     private Double getTotalPrice(Set<CartBook> cartBooks) {
         Double total = 0.0;
         for (CartBook cartBook : cartBooks) {
-            total += cartBook.getBook().getPrice();
+            total += (cartBook.getBook().getPrice() * Math.max(1, cartBook.getQuantity()));
         }
         System.out.println("TOTAL: " + total);
         return total;
     }
 
     private Double getTotalPrice(Set<CartBook> cartBooks, Promotion promo) {
-        return getTotalPrice(cartBooks) * (100 - (promo.getPercentage()) / 100);
+        return getTotalPrice(cartBooks) * ( ((double) (100 - promo.getPercentage()) / 100 ));
     }
 
     private void addBookToOrder(CompletedOrder order, CartBook toAdd) {

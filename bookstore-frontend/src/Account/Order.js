@@ -29,9 +29,9 @@ export default function Order(props)
             </div>
             
             <div className='order-books'>
-                {props.books.map((bookObject, k)=>
+                {props.books.map((ordered, k)=>
                 <div key={k} className='order-book'>
-                    <img src={bookObject.book.coverURL} alt={bookObject.book.title} className='order-cover-img'/>
+                    <img src={ordered.book.coverURL} alt={ordered.book.title} className='order-cover-img'/>
                 </div>
                 )}
             </div>

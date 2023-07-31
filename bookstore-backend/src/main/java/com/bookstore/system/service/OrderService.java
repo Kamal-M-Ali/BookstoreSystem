@@ -45,7 +45,6 @@ public class OrderService {
             temp.setBook(cartBook.getBook());
             temp.setQuantity(cartBook.getQuantity());
             temp.setCompletedOrder(newOrder);
-            cartBookRepository.delete(cartBook);
             toAdd.add(temp);
         }
         newOrder.setOrderedBooks(toAdd);
@@ -61,7 +60,6 @@ public class OrderService {
         completedOrderRepository.save(newOrder);
         Set<CompletedOrder> orderList = customer.getCompletedOrders();
         orderList.add(newOrder);
-        customer.setCompletedOrders(orderList);
         customerRepository.save(customer);
         return ResponseEntity.ok().body("Order Placed");
     }

@@ -30,11 +30,11 @@ public class CompletedOrder {
     @JsonManagedReference(value = "orderedBooks")
     @OneToMany(mappedBy = "completedOrder", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     private Set<CartBook> orderedBooks;
-    @OneToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.ALL)
     private PaymentCard paymentCard;
-    @OneToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.ALL)
     private Address address;
-    @OneToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.ALL)
     private Promotion promotion = null;
 
     public int getOrderId() {

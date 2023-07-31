@@ -8,7 +8,7 @@ public class CartBook {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    @OneToOne
+    @ManyToOne
     private Book book;
     private int quantity;
     @JsonBackReference(value = "orderedBooks")

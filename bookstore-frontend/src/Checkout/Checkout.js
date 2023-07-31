@@ -182,7 +182,6 @@ export default function Checkout() {
             let price = countTotalPrice() * ((100 - appliedPromo.percentage) / 100);
         }
 
-        // I CAN'T GET THIS WORKING
         const email = localStorage.getItem('email') || sessionStorage.getItem('email');
         axios.post("http://localhost:8080/api/checkout/:" + email, null, { params: {
             

@@ -116,9 +116,10 @@ public class CustomerService {
                     "<body style=\"background-color: rgb(243, 243, 243);\">\n" +
                     "    <h1 style=\"font-size: 4em;text-align: center;padding-top: 2em;font-family: font-family:Arial, Helvetica, sans-serif;;\">\n" +
                     (isActive ?
-                            "        Your account has been successfully activated!\n"
+                            "        Your account has already been activated.\n"
                             :
-                            "        Your account has already been activated.\n") +
+                            "        Your account has been successfully activated!\n") +
+
                     "    </h1>\n" +
                     "</body>\n" +
                     "</html>");

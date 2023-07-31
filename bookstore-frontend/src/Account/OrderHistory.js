@@ -9,12 +9,12 @@ export default function OrderHistory() {
 
     function fetch() {
         const email = localStorage.getItem('email') || sessionStorage.getItem('email');
-
+        var orderHistory;
         if (email) {
             axios
                 .get('http://localhost:8080/api/orders/:' + email)
                 .then((res) => {
-                    setOrders(res.data);
+                    setOrders(res.data.sort((a, b) => a.orderId - b.orderId));
                 })
                 .catch((err) => {
                     console.log('Error getting orders');

@@ -184,7 +184,7 @@ export default function Checkout() {
             axios.post("http://localhost:8080/api/checkout/:" + email, null, {
                 params: {
                     card: selectedCard.lastFour,
-                    promo: ((appliedPromo === null) ? "" : appliedPromo)
+                    promo: ((appliedPromo === null) ? "" : appliedPromo.code)
                 }
             }).then((res) => {
                 // advance to confirmation screen

@@ -32,6 +32,8 @@ public class OrderService {
     private PaymentCardRepository paymentCardRepository;
     @Autowired
     private CartBookRepository cartBookRepository;
+    @Autowired
+    private EmailService emailService;
 
     public ResponseEntity<String> checkout(Customer customer, String card, String promoCode) {
         CompletedOrder newOrder = new CompletedOrder();
@@ -61,6 +63,8 @@ public class OrderService {
         Set<CompletedOrder> orderList = customer.getCompletedOrders();
         orderList.add(newOrder);
         customerRepository.save(customer);
+        emailService.sendEmail(customer.getEmail(), "Order Confirmation", "Your order has been placed. You can find it in the Account page.");
+
         return ResponseEntity.ok().body("Order Placed");
     }
 

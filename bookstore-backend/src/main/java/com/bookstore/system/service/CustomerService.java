@@ -2,6 +2,7 @@ package com.bookstore.system.service;
 
 import com.bookstore.system.model.*;
 import com.bookstore.system.repository.CustomerRepository;
+import com.bookstore.system.repository.PaymentCardRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -15,11 +16,15 @@ public class CustomerService {
     @Autowired
     private CustomerRepository customerRepository;
     @Autowired
+    private PaymentCardRepository paymentCardRepository;
+    @Autowired
     private PaymentCardService paymentCardService;
     @Autowired
     private CartService cartService;
     @Autowired
     private PasswordService passwordService;
+    @Autowired
+    private OrderService orderService;
     @Autowired
     private EmailService emailService;
     @Autowired
@@ -281,6 +286,27 @@ public class CustomerService {
         if (customer != null) {
             cartService.delFromCart(customer.getCart(), book);
             return ResponseEntity.ok().body("Deleted from cart");
+        }
+        return ResponseEntity.badRequest().body("Could not find account.");
+    }
+
+    public ResponseEntity<String> checkout(String email, String lastFour, String promoCode) {
+        Customer customer = customerRepository.findByEmail(email);
+
+        if (customer != null) {
+            PaymentCard savedPayment = paymentCardRepository.findByCustomerIdAndLastFour(
+                    customer.getId(),
+                    lastFour);
+
+            if (savedPayment != null) {
+                orderService.checkout(customer, savedPayment, promoCode);
+                emailService.sendEmail(customer.getEmail(),
+                        "[Bookstore System] Order Confirmed",
+                        "This is an email to inform you that your order has been successfully placed.");
+
+                return ResponseEntity.ok().body("Order success!");
+            } else
+                return ResponseEntity.badRequest().body("Invalid payment method.");
         }
         return ResponseEntity.badRequest().body("Could not find account.");
     }

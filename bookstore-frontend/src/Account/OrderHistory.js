@@ -9,7 +9,7 @@ export default function OrderHistory() {
 
     function fetch() {
         const email = localStorage.getItem('email') || sessionStorage.getItem('email');
-        var orderHistory;
+
         if (email) {
             axios
                 .get('http://localhost:8080/api/orders/:' + email)
@@ -32,9 +32,9 @@ export default function OrderHistory() {
                 orders.map((order, k) =>
                     <Order key={k}
                         id={order.orderId}
-                        date={order.orderedDate}
+                        date={order.orderedDate.substring(0,10)}
                         status={order.orderStatus}
-                        total={order.totalPrice}
+                        total={order.totalPrice.toFixed(2)}
                         books={order.orderedBooks}
                         paymentCard={order.paymentCard}
                         address={order.address}

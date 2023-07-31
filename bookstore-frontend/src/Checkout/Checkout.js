@@ -177,24 +177,24 @@ export default function Checkout() {
     } // end apply promotion
 
     function placeOrder() {
-        // This small chunk here never gets used?
-        if(!(appliedPromo === null)) {
-            let price = countTotalPrice() * ((100 - appliedPromo.percentage) / 100);
+        // I CAN'T GET THIS WORKING
+        const email = localStorage.getItem('email') || sessionStorage.getItem('email');
+
+        if (email) {
+            axios.post("http://localhost:8080/api/checkout/:" + email, null, {
+                params: {
+                    card: selectedCard.lastFour,
+                    promo: ((appliedPromo === null) ? "" : appliedPromo)
+                }
+            }).then((res) => {
+                // advance to confirmation screen
+                setStep(2)
+            }).catch((err) => { // If neither exists
+                console.log(err);
+                alert(typeof err.response.data === 'string' ? err.response.data : "[Error]: Couldn't place order");
+            })
         }
 
-        const email = localStorage.getItem('email') || sessionStorage.getItem('email');
-        axios.post("http://localhost:8080/api/checkout/:" + email, null, { params: {
-            
-                card: selectedCard.cardNumber,
-                promo: appliedPromo === null? "" : appliedPromo
-            
-        }}).then((res) => {
-        }).catch((err) => { // If something happens
-            alert("Error placing order.");
-        })
-
-        // advance to confirmation screen
-        setStep(2)
     }
 
     return (<>
@@ -319,8 +319,8 @@ export default function Checkout() {
                         <Card className='confirm-cart-total'>
                             <h1>Order Summary</h1>
                             <hr />
-                            {cartItems.map((cartItem) =>
-                                <p className='checkout-book-title'>{cartItem.quantity} {cartItem.book.title} - ${cartItem.book.price}</p>
+                            {cartItems.map((cartItem, k) =>
+                                <p key={k} className='checkout-book-title'>{cartItem.quantity} {cartItem.book.title} - ${cartItem.book.price}</p>
                             )}
                             <form className='promo-code' onSubmit={applyPromotion}>
                                 <input type='text' name='promoCode' placeholder='Apply promo code' />

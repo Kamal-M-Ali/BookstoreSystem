@@ -190,9 +190,8 @@ export default function Checkout() {
                 promo: appliedPromo === null? "" : appliedPromo
             
         }}).then((res) => {
-            alert(res.data);
-        }).catch((err) => { // If neither exists
-            alert(err.data);
+        }).catch((err) => { // If something happens
+            alert("Error placing order.");
         })
 
         // advance to confirmation screen

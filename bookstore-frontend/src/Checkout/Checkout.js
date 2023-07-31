@@ -177,8 +177,23 @@ export default function Checkout() {
     } // end apply promotion
 
     function placeOrder() {
-        // TODO
-        let price = countTotalPrice() * ((100 - appliedPromo.percentage) / 100);
+        // This small chunk here never gets used?
+        if(!(appliedPromo === null)) {
+            let price = countTotalPrice() * ((100 - appliedPromo.percentage) / 100);
+        }
+
+        // I CAN'T GET THIS WORKING
+        const email = localStorage.getItem('email') || sessionStorage.getItem('email');
+        axios.post("http://localhost:8080/api/checkout/:" + email, null, { params: {
+            
+                card: selectedCard.cardNumber,
+                promo: appliedPromo === null? "" : appliedPromo
+            
+        }}).then((res) => {
+            alert(res.data);
+        }).catch((err) => { // If neither exists
+            alert(err.data);
+        })
 
         // advance to confirmation screen
         setStep(2)

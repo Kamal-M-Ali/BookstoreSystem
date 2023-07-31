@@ -4,12 +4,13 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.Set;
 
 @Entity
 public class CompletedOrder {
-    enum ORDER_STATUS {
+    public enum ORDER_STATUS {
         RETURNED,
         CANCELED,
         PENDING,
@@ -21,7 +22,7 @@ public class CompletedOrder {
     private int orderId;
     private Date orderedDate;
     private ORDER_STATUS orderStatus;
-    private int totalPrice;
+    private Double totalPrice;
     @JsonBackReference(value = "completedOrders")
     @ManyToOne
     @JoinColumn(name = "customer_id")
@@ -48,8 +49,8 @@ public class CompletedOrder {
         return orderedDate;
     }
 
-    public void setOrderedDate(Date orderedDate) {
-        this.orderedDate = orderedDate;
+    public void setOrderedDate(Date date) {
+        this.orderedDate = date;
     }
 
     public ORDER_STATUS getOrderStatus() {
@@ -60,11 +61,11 @@ public class CompletedOrder {
         this.orderStatus = orderStatus;
     }
 
-    public int getTotalPrice() {
+    public Double getTotalPrice() {
         return totalPrice;
     }
 
-    public void setTotalPrice(int totalPrice) {
+    public void setTotalPrice(Double totalPrice) {
         this.totalPrice = totalPrice;
     }
 

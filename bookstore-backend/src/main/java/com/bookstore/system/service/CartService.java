@@ -68,4 +68,13 @@ public class CartService {
 
         cartRepository.save(cart);
     }
+
+    public Double cartTotal(Cart cart) {
+        Set<CartBook> cartBooks = cart.getCartBooks();
+        Double total = 0.0;
+        for (CartBook cartBook : cartBooks) {
+            total += cartBook.getBook().getPrice();
+        }
+        return total;
+    }
 }
